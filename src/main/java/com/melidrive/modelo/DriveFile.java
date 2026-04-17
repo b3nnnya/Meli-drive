@@ -12,6 +12,9 @@ public class DriveFile {
     private String nombre;
     private String tipoMime; // Ej: application/pdf, image/jpeg
     private long sizeEnBytes;
+    
+    // Atributo para texto extraído mediante OCR (Tess4j)
+    private String contenidoExtraido;
 
     /**
      * Constructor (Método especial)
@@ -23,6 +26,7 @@ public class DriveFile {
         this.nombre = nombre;
         this.tipoMime = tipoMime;
         this.sizeEnBytes = sizeEnBytes;
+        this.contenidoExtraido = ""; // Inicialmente vacío
     }
 
     /**
@@ -75,5 +79,13 @@ public class DriveFile {
         } else {
             this.sizeEnBytes = sizeEnBytes;
         }
+    }
+
+    public String getContenidoExtraido() {
+        return contenidoExtraido;
+    }
+
+    public void setContenidoExtraido(String contenidoExtraido) {
+        this.contenidoExtraido = contenidoExtraido;
     }
 }
