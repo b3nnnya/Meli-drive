@@ -1,5 +1,8 @@
 package com.melidrive.modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Clase que representa un archivo de Google Drive.
  * Aquí aplicamos el concepto de "Abstracción" (representando un concepto real en código)
@@ -15,6 +18,9 @@ public class DriveFile {
     
     // Atributo para texto extraído mediante OCR (Tess4j)
     private String contenidoExtraido;
+    
+    // Lista de etiquetas asociadas al documento (Reemplazo manual del OCR automatizado)
+    private List<Etiqueta> etiquetas;
 
     /**
      * Constructor (Método especial)
@@ -27,6 +33,7 @@ public class DriveFile {
         this.tipoMime = tipoMime;
         this.sizeEnBytes = sizeEnBytes;
         this.contenidoExtraido = ""; // Inicialmente vacío
+        this.etiquetas = new ArrayList<>(); // Inicializar lista para evitar nulidad
     }
 
     /**
@@ -87,5 +94,17 @@ public class DriveFile {
 
     public void setContenidoExtraido(String contenidoExtraido) {
         this.contenidoExtraido = contenidoExtraido;
+    }
+
+    public List<Etiqueta> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void agregarEtiqueta(Etiqueta etiqueta) {
+        this.etiquetas.add(etiqueta);
+    }
+
+    public void eliminarEtiqueta(Etiqueta etiqueta) {
+        this.etiquetas.remove(etiqueta);
     }
 }
