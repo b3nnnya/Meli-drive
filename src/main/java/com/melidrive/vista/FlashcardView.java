@@ -6,4 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class FlashcardView extends VBox {
+    private boolean mostrandoPregunta = true;
+    public FlashcardView () {}
+
 }
