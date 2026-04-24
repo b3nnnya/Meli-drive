@@ -52,7 +52,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.melidrive.controlador.AppSigea</mainClass>
+                    <mainClass>com.melidrive.MainApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
