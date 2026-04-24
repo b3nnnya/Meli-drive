@@ -27,5 +27,9 @@ public class MainView {
         sidebar.getChildren().addAll(btnExplorador, btnFlashcards);
 
         setLeft(sidebar);
+
+        // Centro
+        areaCentral = new StackPane();
+        setCenter(areaCentral);
     }
 }
