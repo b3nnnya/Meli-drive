@@ -36,5 +36,10 @@ public class MainView {
         btnExplorador.setOnAction(e -> mostrarExplorador());
         btnFlashcards.setOnAction(e -> mostrarFlashcards());
     }
-
+    private void mostrarExplorador() {
+        areaCentral.getChildren().setAll(new ExploradorView());
+    }
+    private void mostrarFlashcards() {
+        areaCentral.getChildren().setAll(new FlashcardView());
+    }
 }
