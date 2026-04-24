@@ -4,16 +4,20 @@ import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.DriveFolder;
 import com.melidrive.modelo.GestorArchivos;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * Controlador encargado de la navegación y gestión de archivos.
  * Maneja la lógica de entrar a carpetas, crear nuevas, y seleccionar archivos.
+ * Utiliza una pila de historial para la navegación hacia atrás.
  */
 public class ExploradorController {
 
     private GestorArchivos gestorArchivos;
     private DriveFolder carpetaActual;
-    
-    // Referencia al controlador principal para comunicarse con otras partes de la app
+    private Deque<DriveFolder> historial;
+
     private MainController mainController;
 
     /**
@@ -22,8 +26,8 @@ public class ExploradorController {
     public ExploradorController(MainController mainController) {
         this.mainController = mainController;
         this.gestorArchivos = mainController.getGestorArchivos();
-        
-        // Al iniciar el explorador, siempre comenzamos en la raíz ("Mi Unidad")
+        this.historial = new ArrayDeque<>();
+
         this.carpetaActual = gestorArchivos.getCarpetaRaiz();
         System.out.println("ExploradorController inicializado. Ubicación actual: " + carpetaActual.getNombre());
     }
@@ -41,20 +45,21 @@ public class ExploradorController {
      */
     public void entrarACarpeta(DriveFolder subcarpeta) {
         if (this.carpetaActual.getSubcarpetas().contains(subcarpeta)) {
+            historial.push(this.carpetaActual);
             this.carpetaActual = subcarpeta;
             System.out.println("Navegando a: " + carpetaActual.getNombre());
-            // TODO: Notificar a la Vista para actualizar la interfaz (refrescar)
         }
     }
 
     /**
      * Acción: El usuario hace clic en el botón "Volver" o "Atrás".
-     * Nota: Como DriveFolder actualmente no sabe quién es su "padre",
-     * aquí el controlador podría manejar una "pila" (Stack) de historial de navegación en el futuro.
+     * Utiliza la pila de historial para volver a la carpeta anterior.
      */
     public void volverAtras() {
-        System.out.println("Acción: Volver atrás (Requiere implementar historial o referencia al padre).");
-        // Si estuviéramos en la raíz, no hacemos nada.
+        if (!historial.isEmpty()) {
+            this.carpetaActual = historial.pop();
+            System.out.println("Volviendo a: " + carpetaActual.getNombre());
+        }
     }
 
     /**
@@ -64,7 +69,6 @@ public class ExploradorController {
         if (nombre != null && !nombre.trim().isEmpty()) {
             gestorArchivos.crearCarpeta(nombre, this.carpetaActual);
             System.out.println("Nueva carpeta creada: " + nombre);
-            // TODO: Llamar a la Vista para refrescar la pantalla
         }
     }
 
@@ -73,6 +77,6 @@ public class ExploradorController {
      */
     public void abrirArchivo(DriveFile archivo) {
         System.out.println("Solicitando abrir el archivo: " + archivo.getNombre());
-        // TODO: Notificar al MainController para cambiar al Visor de Documentos
+        mainController.mostrarVisorDocumento(archivo);
     }
 }
