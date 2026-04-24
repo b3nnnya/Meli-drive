@@ -1,0 +1,8 @@
+package com.melidrive.vista;
+
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
+public class VisorDocumentoView extends HBox {
+}
