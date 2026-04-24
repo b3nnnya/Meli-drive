@@ -5,7 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-public class MainView {
+public class MainView extends BorderPane {
     private StackPane areaCentral;
     public MainView() {
         // Barra de Busqueda
