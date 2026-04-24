@@ -31,5 +31,10 @@ public class MainView {
         // Centro
         areaCentral = new StackPane();
         setCenter(areaCentral);
+
+        // Eventos
+        btnExplorador.setOnAction(e -> mostrarExplorador());
+        btnFlashcards.setOnAction(e -> mostrarFlashcards());
     }
+
 }
