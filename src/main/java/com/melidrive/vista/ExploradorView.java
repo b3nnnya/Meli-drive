@@ -15,5 +15,7 @@ public class ExploradorView extends VBox {
 
         getChildren().add(tabla);
     }
-    public void cargarArchivos() {}
+    public void cargarArchivos() {
+        tabla.getItems().addAll("archivo1.png", "documento.pdf");
+    }
 }
