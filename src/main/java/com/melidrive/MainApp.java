@@ -1,5 +1,6 @@
 package com.melidrive;
 
+import com.melidrive.controlador.MainController;
 import com.melidrive.vista.MainView;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,9 +14,11 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        MainView mainView = new MainView();
+        MainController mainController = new MainController();
+        MainView mainView = new MainView(mainController);
+        mainController.setMainView(mainView);
 
-        Scene scene = new Scene(mainView, 900, 600);
+        Scene scene = new Scene(mainView, 960, 640);
 
         primaryStage.setTitle("Meli-Drive - Gestión Académica");
         primaryStage.setScene(scene);
