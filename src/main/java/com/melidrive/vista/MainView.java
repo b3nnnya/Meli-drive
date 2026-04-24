@@ -21,8 +21,8 @@ public class MainView extends BorderPane {
         VBox sidebar = new VBox(10);
         sidebar.setPadding(new Insets(10));
 
-        Button btnExplorador = new Button("📁 Explorador");
-        Button btnFlashcards = new Button("🧠 Flashcards");
+        Button btnExplorador = new Button("Explorador");
+        Button btnFlashcards = new Button("Flashcards");
 
         sidebar.getChildren().addAll(btnExplorador, btnFlashcards);
 
