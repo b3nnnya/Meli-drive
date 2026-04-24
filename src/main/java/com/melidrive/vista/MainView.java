@@ -8,6 +8,13 @@ import javafx.scene.layout.*;
 public class MainView {
     private StackPane areaCentral;
     public MainView() {
+        // Barra de Busqueda
+        TextField buscador = new TextField();
+        buscador.setPromptText("Buscar en tus archivos...");
 
+        HBox topBar = new HBox(buscador);
+        topBar.setPadding(new Insets(10));
+
+        setTop(topBar);
     }
 }
