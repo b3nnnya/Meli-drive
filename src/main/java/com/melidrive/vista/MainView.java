@@ -16,5 +16,16 @@ public class MainView {
         topBar.setPadding(new Insets(10));
 
         setTop(topBar);
+
+        // SideBar
+        VBox sidebar = new VBox(10);
+        sidebar.setPadding(new Insets(10));
+
+        Button btnExplorador = new Button("📁 Explorador");
+        Button btnFlashcards = new Button("🧠 Flashcards");
+
+        sidebar.getChildren().addAll(btnExplorador, btnFlashcards);
+
+        setLeft(sidebar);
     }
 }
