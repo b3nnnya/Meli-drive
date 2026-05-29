@@ -1,4 +1,3 @@
 package com.melidrive.util;
 
-public class ThemeManager {
-}
+public class ThemeManager { }
