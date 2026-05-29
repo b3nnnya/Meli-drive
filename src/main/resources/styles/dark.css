@@ -1,0 +1,49 @@
+.root {
+    -fx-background-color: #0f172a;
+}
+
+.content-area {
+    -fx-background-color: #0f172a;
+}
+
+.file-card {
+    -fx-background-color: #1e293b;
+}
+
+.file-title {
+    -fx-text-fill: white;
+}
+
+.file-subtitle {
+    -fx-text-fill: #94a3b8;
+}
+```
+
+---
+
+# 10. ThemeManager.java
+
+```java
+package com.melidrive.util;
+
+import javafx.scene.Scene;
+
+public class ThemeManager {
+
+    public static void aplicarDarkMode(Scene scene) {
+
+        scene.getStylesheets().clear();
+
+        scene.getStylesheets().add(
+                ThemeManager.class
+                        .getResource("/styles/main.css")
+                        .toExternalForm()
+        );
+
+        scene.getStylesheets().add(
+                ThemeManager.class
+                        .getResource("/styles/dark.css")
+                        .toExternalForm()
+        );
+    }
+}
