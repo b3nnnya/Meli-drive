@@ -1,0 +1,123 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f5f7fb;
+}
+
+.topbar {
+    -fx-background-color: white;
+    -fx-padding: 12;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 0 1 0;
+}
+
+.search-field {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 14;
+    -fx-padding: 10 14;
+    -fx-font-size: 13px;
+}
+
+.sidebar {
+    -fx-background-color: #111827;
+    -fx-padding: 20 12;
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d1d5db;
+    -fx-font-size: 14px;
+    -fx-padding: 12 16;
+    -fx-background-radius: 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #1f2937;
+}
+
+.sidebar-button-active {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+}
+
+.content-area {
+    -fx-background-color: #f5f7fb;
+}
+
+.toolbar {
+    -fx-padding: 12;
+    -fx-spacing: 10;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.secondary-button {
+    -fx-background-color: #374151;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+}
+
+.file-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 18;
+    -fx-spacing: 10;
+    -fx-pref-width: 180;
+    -fx-pref-height: 160;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 4);
+}
+
+.file-card:hover {
+    -fx-background-color: #f9fafb;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.14), 18, 0, 0, 6);
+}
+
+.file-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.file-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6b7280;
+}
+
+.flashcard {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.10), 18, 0, 0, 6);
+}
+
+.flashcard-question {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.flashcard-answer {
+    -fx-font-size: 20px;
+    -fx-text-fill: #374151;
+}
