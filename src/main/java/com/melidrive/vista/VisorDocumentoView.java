@@ -4,6 +4,7 @@ import com.melidrive.controlador.MainController;
 import com.melidrive.controlador.VisorDocumentoController;
 import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.Etiqueta;
+import com.melidrive.vista.componentes.EtiquetaChip;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -84,8 +85,7 @@ public class VisorDocumentoView extends HBox {
                 HBox fila = new HBox(5);
                 fila.setAlignment(Pos.CENTER_LEFT);
 
-                Label chip = new Label("● " + etiqueta.getNombre());
-                chip.setStyle("-fx-text-fill: " + etiqueta.getColorHex() + "; -fx-font-size: 12px;");
+                EtiquetaChip chip = new EtiquetaChip(etiqueta);
 
                 Button btnEliminar = new Button("✕");
                 btnEliminar.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; "

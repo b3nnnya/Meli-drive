@@ -6,165 +6,105 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
-/**
- * Vista del Modo Estudio (Flashcards).
- * Muestra tarjetas de repaso espaciado con funcionalidad de voltear
- * y calificar (Fácil / Difícil).
- */
 public class FlashcardView extends VBox {
 
-    private FlashcardController controller;
+    private final FlashcardController controller;
+
+    private Label contenido;
+    private ProgressBar progressBar;
+
     private boolean mostrandoPregunta = true;
 
-    private Label labelContenido;
-    private Label labelProgreso;
-    private Label labelIndicador;
-    private Button btnFacil;
-    private Button btnDificil;
-    private StackPane tarjeta;
-    private VBox contenedorBotones;
-
     public FlashcardView(FlashcardController controller) {
+
         this.controller = controller;
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(20);
-        this.setPadding(new Insets(30));
-        this.setStyle("-fx-background-color: #ecf0f1;");
 
-        // Título
-        Label titulo = new Label("📚 Modo Estudio - Repaso Espaciado");
-        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        setAlignment(Pos.CENTER);
+        setSpacing(20);
+        setPadding(new Insets(40));
 
-        // Progreso
-        labelProgreso = new Label();
-        labelProgreso.setStyle("-fx-font-size: 13px; -fx-text-fill: #7f8c8d;");
+        Label titulo = new Label("Modo Estudio");
+        titulo.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
 
-        // Indicador (Pregunta / Respuesta)
-        labelIndicador = new Label("PREGUNTA");
-        labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
+        progressBar = new ProgressBar(0.4);
+        progressBar.setPrefWidth(400);
 
-        // Tarjeta
-        tarjeta = new StackPane();
-        tarjeta.setPrefSize(500, 200);
-        tarjeta.setMaxSize(500, 200);
-        tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
+        StackPane card = new StackPane();
+        card.getStyleClass().add("flashcard");
+        card.setPrefSize(650, 300);
 
-        labelContenido = new Label();
-        labelContenido.setStyle("-fx-font-size: 18px; -fx-text-fill: #2d3436; -fx-wrap-text: true;");
-        labelContenido.setWrapText(true);
-        labelContenido.setMaxWidth(450);
-        labelContenido.setAlignment(Pos.CENTER);
+        contenido = new Label("Inicia una sesión de estudio");
+        contenido.getStyleClass().add("flashcard-question");
+        contenido.setWrapText(true);
+        contenido.setMaxWidth(500);
 
-        tarjeta.getChildren().add(labelContenido);
+        card.getChildren().add(contenido);
 
-        Label instruccion = new Label("(Haz clic en la tarjeta para voltearla)");
-        instruccion.setStyle("-fx-font-size: 11px; -fx-text-fill: #b2bec3;");
+        Button iniciar = new Button("Iniciar Sesión");
+        iniciar.getStyleClass().add("primary-button");
 
-        tarjeta.setOnMouseClicked(e -> voltearTarjeta());
+        Button facil = new Button("✅ Fácil");
+        facil.getStyleClass().add("primary-button");
 
-        // Botones de calificación
-        btnFacil = new Button("✅ Fácil");
-        btnFacil.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; "
-                + "-fx-font-size: 14px; -fx-cursor: hand; -fx-pref-width: 120;");
-        btnFacil.setOnAction(e -> calificar(2));
+        Button dificil = new Button("❌ Difícil");
+        dificil.getStyleClass().add("secondary-button");
 
-        btnDificil = new Button("❌ Difícil");
-        btnDificil.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; "
-                + "-fx-font-size: 14px; -fx-cursor: hand; -fx-pref-width: 120;");
-        btnDificil.setOnAction(e -> calificar(1));
-
-        contenedorBotones = new VBox(10);
-        contenedorBotones.setAlignment(Pos.CENTER);
-        HBox filaBotones = new HBox(20, btnDificil, btnFacil);
-        filaBotones.setAlignment(Pos.CENTER);
-        contenedorBotones.getChildren().add(filaBotones);
-
-        // Botón iniciar sesión
-        Button btnIniciar = new Button("▶ Iniciar Sesión de Estudio");
-        btnIniciar.setStyle("-fx-background-color: #6c5ce7; -fx-text-fill: white; "
-                + "-fx-font-size: 14px; -fx-cursor: hand;");
-        btnIniciar.setOnAction(e -> {
+        iniciar.setOnAction(e -> {
             controller.iniciarSesionDeEstudio();
-            mostrarTarjetaActual();
+            mostrarActual();
         });
 
-        getChildren().addAll(titulo, labelProgreso, btnIniciar, labelIndicador, tarjeta, instruccion, contenedorBotones);
+        facil.setOnAction(e -> {
+            controller.calificarYAvanzar(2);
+            mostrarActual();
+        });
 
-        // Estado inicial
-        int pendientes = controller.getTarjetasPendientesHoy();
-        labelProgreso.setText("Tarjetas pendientes hoy: " + pendientes
-                + " | Total en el sistema: " + controller.getTotalFlashcards());
-        labelContenido.setText("Presiona \"Iniciar Sesión\" para comenzar");
-        contenedorBotones.setVisible(false);
-        labelIndicador.setVisible(false);
+        dificil.setOnAction(e -> {
+            controller.calificarYAvanzar(1);
+            mostrarActual();
+        });
+
+        card.setOnMouseClicked(e -> voltear());
+
+        getChildren().addAll(
+                titulo,
+                progressBar,
+                iniciar,
+                card,
+                facil,
+                dificil
+        );
     }
 
-    /**
-     * Muestra la tarjeta actual de la sesión (lado pregunta).
-     */
-    private void mostrarTarjetaActual() {
+    private void mostrarActual() {
+
         Flashcard actual = controller.getFlashcardActual();
+
         if (actual == null) {
-            mostrarSesionFinalizada();
+            contenido.setText("🎉 Sesión completada");
             return;
         }
 
         mostrandoPregunta = true;
-        labelContenido.setText(actual.getPregunta());
-        labelIndicador.setText("PREGUNTA");
-        labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
-        labelIndicador.setVisible(true);
-        contenedorBotones.setVisible(false);
-
-        tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
+        contenido.setText(actual.getPregunta());
     }
 
-    /**
-     * Voltea la tarjeta entre pregunta y respuesta.
-     */
-    private void voltearTarjeta() {
+    private void voltear() {
+
         Flashcard actual = controller.getFlashcardActual();
+
         if (actual == null) return;
 
         if (mostrandoPregunta) {
-            labelContenido.setText(actual.getRespuesta());
-            labelIndicador.setText("RESPUESTA");
-            labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #e17055; -fx-font-weight: bold;");
-            tarjeta.setStyle("-fx-background-color: #ffeaa7; -fx-background-radius: 12; "
-                    + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
-            contenedorBotones.setVisible(true);
+            contenido.setText(actual.getRespuesta());
         } else {
-            labelContenido.setText(actual.getPregunta());
-            labelIndicador.setText("PREGUNTA");
-            labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
-            tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
-                    + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
-            contenedorBotones.setVisible(false);
+            contenido.setText(actual.getPregunta());
         }
+
         mostrandoPregunta = !mostrandoPregunta;
-    }
-
-    /**
-     * Califica la tarjeta actual y avanza a la siguiente.
-     */
-    private void calificar(int calificacion) {
-        controller.calificarYAvanzar(calificacion);
-        mostrarTarjetaActual();
-    }
-
-    /**
-     * Muestra mensaje de sesión completada.
-     */
-    private void mostrarSesionFinalizada() {
-        labelContenido.setText("🎉 ¡Sesión completada!\nNo hay más tarjetas por repasar hoy.");
-        labelContenido.setStyle("-fx-font-size: 16px; -fx-text-fill: #27ae60; -fx-wrap-text: true;");
-        labelIndicador.setVisible(false);
-        contenedorBotones.setVisible(false);
-        tarjeta.setStyle("-fx-background-color: #d5f5e3; -fx-background-radius: 12; "
-                + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 3);");
     }
 }
