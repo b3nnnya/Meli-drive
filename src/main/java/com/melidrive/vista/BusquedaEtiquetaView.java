@@ -8,6 +8,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.util.List;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
 
 /**
  * Vista para buscar archivos por etiqueta.
@@ -23,14 +25,14 @@ public class BusquedaEtiquetaView extends VBox {
         this.mainController = mainController;
         this.setSpacing(15);
         this.setPadding(new Insets(20));
-        this.setStyle("-fx-background-color: #ecf0f1;");
+        this.getStyleClass().add("content-area");
 
         // Titulo
         Label titulo = new Label("Buscar por Etiqueta");
-        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titulo.getStyleClass().add("text-h1");
 
         Label descripcion = new Label("Escribe el nombre de una etiqueta para encontrar archivos asociados.");
-        descripcion.setStyle("-fx-font-size: 13px; -fx-text-fill: #7f8c8d;");
+        descripcion.getStyleClass().add("text-body");
 
         // Campo de busqueda
         HBox barBusqueda = new HBox(10);
@@ -39,18 +41,16 @@ public class BusquedaEtiquetaView extends VBox {
         TextField campoBusqueda = new TextField();
         campoBusqueda.setPromptText("Nombre de etiqueta...");
         campoBusqueda.setPrefWidth(350);
-        campoBusqueda.setStyle("-fx-background-color: white; -fx-background-radius: 8; "
-                + "-fx-padding: 10; -fx-font-size: 13px;");
+        campoBusqueda.getStyleClass().add("search-field");
 
         Button btnBuscar = new Button("Buscar");
-        btnBuscar.setStyle("-fx-background-color: #6c5ce7; -fx-text-fill: white; "
-                + "-fx-cursor: hand; -fx-font-size: 13px; -fx-background-radius: 8; -fx-padding: 10 20;");
+        btnBuscar.getStyleClass().add("modern-button-primary");
 
         barBusqueda.getChildren().addAll(campoBusqueda, btnBuscar);
 
         // Label de resultados
         labelResultados = new Label();
-        labelResultados.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        labelResultados.getStyleClass().add("text-h2");
 
         // Contenedor de resultados
         contenedorResultados = new FlowPane();
@@ -59,7 +59,7 @@ public class BusquedaEtiquetaView extends VBox {
 
         ScrollPane scroll = new ScrollPane(contenedorResultados);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background: #ecf0f1; -fx-background-color: #ecf0f1;");
+        scroll.getStyleClass().add("scroll-pane");
         VBox.setVgrow(scroll, Priority.ALWAYS);
 
         // Accion de busqueda
@@ -68,8 +68,7 @@ public class BusquedaEtiquetaView extends VBox {
 
         // Boton volver
         Button btnVolver = new Button("Volver al Explorador");
-        btnVolver.setStyle("-fx-background-color: #636e72; -fx-text-fill: white; "
-                + "-fx-cursor: hand; -fx-background-radius: 8; -fx-padding: 8 16;");
+        btnVolver.getStyleClass().add("modern-button-secondary");
         btnVolver.setOnAction(e -> mainController.mostrarExplorador());
 
         getChildren().addAll(titulo, descripcion, barBusqueda, labelResultados, scroll, btnVolver);
@@ -93,7 +92,7 @@ public class BusquedaEtiquetaView extends VBox {
 
         if (resultados.isEmpty()) {
             Label sinResultados = new Label("No se encontraron archivos con esa etiqueta.");
-            sinResultados.setStyle("-fx-text-fill: #b2bec3; -fx-font-size: 14px;");
+            sinResultados.getStyleClass().add("text-caption");
             contenedorResultados.getChildren().add(sinResultados);
         } else {
             for (DriveFile archivo : resultados) {
@@ -111,14 +110,14 @@ public class BusquedaEtiquetaView extends VBox {
         item.setAlignment(Pos.CENTER_LEFT);
         item.setPadding(new Insets(12));
         item.setPrefWidth(250);
-        item.setStyle("-fx-background-color: white; -fx-background-radius: 10; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);");
+        item.getStyleClass().add("modern-card");
 
         Label nombre = new Label(archivo.getNombre());
-        nombre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        nombre.getStyleClass().add("text-body");
+        nombre.setStyle("-fx-font-weight: bold;");
 
         Label tipo = new Label(archivo.getTipoMime());
-        tipo.setStyle("-fx-font-size: 11px; -fx-text-fill: #7f8c8d;");
+        tipo.getStyleClass().add("text-caption");
 
         // Mostrar etiquetas del archivo
         HBox etiquetasBox = new HBox(5);
@@ -138,12 +137,17 @@ public class BusquedaEtiquetaView extends VBox {
             }
         });
 
-        // Hover effect
-        item.setOnMouseEntered(e -> item.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 10; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 8, 0, 0, 3);"));
-        item.setOnMouseExited(e -> item.setStyle("-fx-background-color: white; -fx-background-radius: 10; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);"));
+        // Hover effect animado
+        item.setOnMouseEntered(e -> animarEscala(item, 1.03));
+        item.setOnMouseExited(e -> animarEscala(item, 1.0));
 
         return item;
+    }
+
+    private void animarEscala(VBox nodo, double scale) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(150), nodo);
+        st.setToX(scale);
+        st.setToY(scale);
+        st.play();
     }
 }
