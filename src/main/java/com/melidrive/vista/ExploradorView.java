@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
 
 /**
  * Vista del Explorador de archivos.
@@ -33,17 +35,17 @@ public class ExploradorView extends VBox {
         HBox toolbar = new HBox(10);
         toolbar.setPadding(new Insets(10));
         toolbar.setAlignment(Pos.CENTER_LEFT);
-        toolbar.setStyle("-fx-background-color: #dfe6e9;");
+        toolbar.getStyleClass().add("toolbar");
 
         Button btnVolver = new Button("Atrás");
-        btnVolver.setStyle("-fx-background-color: #636e72; -fx-text-fill: white; -fx-cursor: hand;");
+        btnVolver.getStyleClass().add("modern-button-secondary");
         btnVolver.setOnAction(e -> {
             controller.volverAtras();
             refrescar();
         });
 
         Button btnNuevaCarpeta = new Button("Nueva Carpeta");
-        btnNuevaCarpeta.setStyle("-fx-background-color: #0984e3; -fx-text-fill: white; -fx-cursor: hand;");
+        btnNuevaCarpeta.getStyleClass().add("modern-button-primary");
         btnNuevaCarpeta.setOnAction(e -> {
             DialogoNuevaCarpeta dialogo = new DialogoNuevaCarpeta();
             String nombre = dialogo.mostrar();
@@ -66,7 +68,7 @@ public class ExploradorView extends VBox {
         });
 
         labelUbicacion = new Label();
-        labelUbicacion.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2d3436;");
+        labelUbicacion.getStyleClass().add("text-h3");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -82,7 +84,7 @@ public class ExploradorView extends VBox {
 
         ScrollPane scroll = new ScrollPane(contenedorArchivos);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background: #ecf0f1; -fx-background-color: #ecf0f1;");
+        scroll.getStyleClass().add("scroll-pane");
         VBox.setVgrow(scroll, Priority.ALWAYS);
 
         getChildren().add(scroll);
@@ -113,7 +115,7 @@ public class ExploradorView extends VBox {
         // Mensaje si está vacía
         if (carpetaActual.getSubcarpetas().isEmpty() && carpetaActual.getArchivos().isEmpty()) {
             Label vacio = new Label("Esta carpeta está vacía");
-            vacio.setStyle("-fx-text-fill: #b2bec3; -fx-font-size: 16px;");
+            vacio.getStyleClass().add("text-body");
             contenedorArchivos.getChildren().add(vacio);
         }
     }
@@ -125,20 +127,19 @@ public class ExploradorView extends VBox {
         VBox item = new VBox(5);
         item.setAlignment(Pos.CENTER);
         item.setPadding(new Insets(10));
-        item.setPrefSize(120, 100);
-        item.setStyle("-fx-background-color: white; -fx-background-radius: 8; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);");
+        item.setPrefSize(140, 120);
+        item.getStyleClass().add("modern-card");
 
         ImageView icono = crearIcono(IconosUtil.TipoIcono.CARPETA);
         Label nombre = new Label(carpeta.getNombre());
-        nombre.setStyle("-fx-font-size: 11px; -fx-text-fill: #2d3436;");
+        nombre.getStyleClass().add("text-body");
         nombre.setWrapText(true);
-        nombre.setMaxWidth(100);
+        nombre.setMaxWidth(120);
         nombre.setAlignment(Pos.CENTER);
 
         int totalElementos = carpeta.getSubcarpetas().size() + carpeta.getArchivos().size();
         Label lblElementos = new Label(totalElementos + " elem.");
-        lblElementos.setStyle("-fx-font-size: 9px; -fx-text-fill: #7f8c8d;");
+        lblElementos.getStyleClass().add("text-caption");
 
         item.getChildren().addAll(icono, nombre, lblElementos);
 
@@ -150,11 +151,9 @@ public class ExploradorView extends VBox {
             }
         });
 
-        // Hover effect
-        item.setOnMouseEntered(e -> item.setStyle("-fx-background-color: #dfe6e9; -fx-background-radius: 8; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 6, 0, 0, 3);"));
-        item.setOnMouseExited(e -> item.setStyle("-fx-background-color: white; -fx-background-radius: 8; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);"));
+        // Hover effect animado
+        item.setOnMouseEntered(e -> animarEscala(item, 1.05));
+        item.setOnMouseExited(e -> animarEscala(item, 1.0));
 
         return item;
     }
@@ -166,17 +165,16 @@ public class ExploradorView extends VBox {
         VBox item = new VBox(5);
         item.setAlignment(Pos.CENTER);
         item.setPadding(new Insets(10));
-        item.setPrefSize(120, 100);
-        item.setStyle("-fx-background-color: white; -fx-background-radius: 8; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);");
+        item.setPrefSize(140, 120);
+        item.getStyleClass().add("modern-card");
 
         IconosUtil.TipoIcono tipo = IconosUtil.getIconoPorMime(archivo.getTipoMime());
         ImageView icono = crearIcono(tipo);
 
         Label nombre = new Label(archivo.getNombre());
-        nombre.setStyle("-fx-font-size: 11px; -fx-text-fill: #2d3436;");
+        nombre.getStyleClass().add("text-body");
         nombre.setWrapText(true);
-        nombre.setMaxWidth(100);
+        nombre.setMaxWidth(120);
         nombre.setAlignment(Pos.CENTER);
 
         item.getChildren().addAll(icono, nombre);
@@ -196,11 +194,9 @@ public class ExploradorView extends VBox {
             }
         });
 
-        // Hover effect
-        item.setOnMouseEntered(e -> item.setStyle("-fx-background-color: #dfe6e9; -fx-background-radius: 8; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 6, 0, 0, 3);"));
-        item.setOnMouseExited(e -> item.setStyle("-fx-background-color: white; -fx-background-radius: 8; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);"));
+        // Hover effect animado
+        item.setOnMouseEntered(e -> animarEscala(item, 1.05));
+        item.setOnMouseExited(e -> animarEscala(item, 1.0));
 
         return item;
     }
@@ -224,5 +220,12 @@ public class ExploradorView extends VBox {
         }
 
         return imageView;
+    }
+
+    private void animarEscala(VBox nodo, double scale) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(150), nodo);
+        st.setToX(scale);
+        st.setToY(scale);
+        st.play();
     }
 }
