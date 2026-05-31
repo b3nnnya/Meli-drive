@@ -121,6 +121,18 @@ public class FlashcardController {
     }
 
     /**
+     * Devuelve las flashcards asociadas a un archivo específico.
+     * @param archivo el archivo por el cual filtrar
+     * @return lista de flashcards vinculadas a ese archivo
+     */
+    public List<Flashcard> getFlashcardsPorArchivo(DriveFile archivo) {
+        return todasLasFlashcards.stream()
+                .filter(f -> f.getArchivoAsociado() != null
+                        && f.getArchivoAsociado().equals(archivo))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Indica si la sesión de estudio actual ya finalizó.
      */
     public boolean sesionFinalizada() {
