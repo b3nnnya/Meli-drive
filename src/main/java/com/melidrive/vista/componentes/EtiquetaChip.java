@@ -40,11 +40,8 @@ public class EtiquetaChip extends HBox {
 
         // Texto
         Label texto = new Label(etiqueta.getNombre());
-        texto.setStyle(
-                "-fx-text-fill: #1f2937;" +
-                        "-fx-font-size: 12px;" +
-                        "-fx-font-weight: bold;"
-        );
+        texto.getStyleClass().add("text-body");
+        texto.setStyle("-fx-font-weight: bold;");
 
         getChildren().addAll(punto, texto);
     }
