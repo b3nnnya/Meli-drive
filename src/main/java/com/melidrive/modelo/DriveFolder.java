@@ -74,4 +74,25 @@ public class DriveFolder {
     public List<DriveFolder> getSubcarpetas() {
         return subcarpetas;
     }
+
+    /**
+     * Cuenta el total de archivos en esta carpeta y todas sus subcarpetas.
+     * @return el número total de archivos recursivamente
+     */
+    public int contarArchivosRecursivo() {
+        int total = archivos.size();
+        for (DriveFolder subcarpeta : subcarpetas) {
+            total += subcarpeta.contarArchivosRecursivo();
+        }
+        return total;
+    }
+
+    /**
+     * Representación en texto de la carpeta para depuración.
+     */
+    @Override
+    public String toString() {
+        return "DriveFolder{nombre='" + nombre + "', archivos=" + archivos.size()
+                + ", subcarpetas=" + subcarpetas.size() + "}";
+    }
 }
