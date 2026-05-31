@@ -107,4 +107,12 @@ public class DriveFile {
     public void eliminarEtiqueta(Etiqueta etiqueta) {
         this.etiquetas.remove(etiqueta);
     }
+
+    /**
+     * Representación en texto del archivo para depuración.
+     */
+    @Override
+    public String toString() {
+        return "DriveFile{nombre='" + nombre + "', tipo='" + tipoMime + "', size=" + sizeEnBytes + "B}";
+    }
 }
