@@ -90,6 +90,23 @@ public class GestorArchivos {
         }
     }
 
+    /**
+     * Elimina un archivo de una carpeta específica.
+     * @param archivo el archivo a eliminar
+     * @param carpeta la carpeta de donde se elimina
+     * @return true si se eliminó exitosamente, false si no se encontró
+     */
+    public boolean eliminarArchivo(DriveFile archivo, DriveFolder carpeta) {
+        if (archivo != null && carpeta != null) {
+            boolean eliminado = carpeta.getArchivos().remove(archivo);
+            if (eliminado) {
+                System.out.println("Archivo eliminado: " + archivo.getNombre());
+            }
+            return eliminado;
+        }
+        return false;
+    }
+
     public DriveFolder getCarpetaRaiz() {
         return carpetaRaiz;
     }
