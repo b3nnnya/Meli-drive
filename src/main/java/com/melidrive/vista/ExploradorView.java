@@ -169,6 +169,14 @@ public class ExploradorView extends VBox {
 
         item.getChildren().addAll(icono, nombre);
 
+        // Tooltip con info detallada
+        String infoTooltip = "Nombre: " + archivo.getNombre() + "\n"
+                + "Tipo: " + archivo.getTipoMime() + "\n"
+                + "Tamaño: " + (archivo.getSizeEnBytes() / 1024) + " KB\n"
+                + "Etiquetas: " + archivo.getEtiquetas().size();
+        Tooltip tooltip = new Tooltip(infoTooltip);
+        Tooltip.install(item, tooltip);
+
         // Doble clic para abrir en visor
         item.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
