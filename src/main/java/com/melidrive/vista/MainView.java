@@ -49,7 +49,7 @@ public class MainView extends BorderPane {
         });
 
         Button btnModoOscuro = new Button("Modo Oscuro");
-        btnModoOscuro.setStyle("-fx-background-color: #34495e; -fx-text-fill: white; -fx-cursor: hand;");
+        btnModoOscuro.getStyleClass().add("modern-button-secondary");
         btnModoOscuro.setOnAction(e -> {
             mainController.toggleModoOscuro();
         });
@@ -58,22 +58,21 @@ public class MainView extends BorderPane {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox topBar = new HBox(10, buscador, btnBuscar, spacer, btnModoOscuro);
-        topBar.setPadding(new Insets(10));
+        topBar.getStyleClass().add("topbar");
         topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setStyle("-fx-background-color: #2c3e50;");
-        buscador.setStyle("-fx-background-color: #ecf0f1; -fx-prompt-text-fill: #7f8c8d;");
-        btnBuscar.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;");
+        
+        buscador.getStyleClass().add("search-field");
+        btnBuscar.getStyleClass().add("modern-button-primary");
 
         setTop(topBar);
 
         // === SIDEBAR ===
         VBox sidebar = new VBox(8);
-        sidebar.setPadding(new Insets(15, 10, 10, 10));
-        sidebar.setPrefWidth(180);
-        sidebar.setStyle("-fx-background-color: #34495e;");
+        sidebar.setPrefWidth(220);
+        sidebar.getStyleClass().add("sidebar");
 
         Label tituloSidebar = new Label("Meli-Drive");
-        tituloSidebar.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ecf0f1;");
+        tituloSidebar.getStyleClass().add("sidebar-title");
 
         Separator separador = new Separator();
 
@@ -81,34 +80,21 @@ public class MainView extends BorderPane {
         btnBuscarEtiqueta = new Button("Buscar por Etiqueta");
         btnFlashcards = new Button("Modo Estudio");
 
-        String estiloBoton = "-fx-background-color: transparent; -fx-text-fill: #bdc3c7; "
-                + "-fx-font-size: 13px; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-pref-width: 160;";
-        String estiloBotonActivo = "-fx-background-color: #2c3e50; -fx-text-fill: #ecf0f1; "
-                + "-fx-font-size: 13px; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-pref-width: 160;";
-
-        btnExplorador.setStyle(estiloBotonActivo);
-        btnBuscarEtiqueta.setStyle(estiloBoton);
-        btnFlashcards.setStyle(estiloBoton);
+        actualizarEstiloBotonesSidebar(btnExplorador);
 
         btnExplorador.setOnAction(e -> {
             mainController.getSidebarController().irAMiUnidad();
-            btnExplorador.setStyle(estiloBotonActivo);
-            btnBuscarEtiqueta.setStyle(estiloBoton);
-            btnFlashcards.setStyle(estiloBoton);
+            actualizarEstiloBotonesSidebar(btnExplorador);
         });
 
         btnBuscarEtiqueta.setOnAction(e -> {
             mainController.getSidebarController().irABuscarPorEtiqueta();
-            btnBuscarEtiqueta.setStyle(estiloBotonActivo);
-            btnExplorador.setStyle(estiloBoton);
-            btnFlashcards.setStyle(estiloBoton);
+            actualizarEstiloBotonesSidebar(btnBuscarEtiqueta);
         });
 
         btnFlashcards.setOnAction(e -> {
             mainController.getSidebarController().irAModoEstudio();
-            btnFlashcards.setStyle(estiloBotonActivo);
-            btnExplorador.setStyle(estiloBoton);
-            btnBuscarEtiqueta.setStyle(estiloBoton);
+            actualizarEstiloBotonesSidebar(btnFlashcards);
         });
 
         sidebar.getChildren().addAll(tituloSidebar, separador, btnExplorador, btnBuscarEtiqueta, btnFlashcards);
@@ -116,8 +102,20 @@ public class MainView extends BorderPane {
 
         // === ÁREA CENTRAL ===
         areaCentral = new StackPane();
-        areaCentral.setStyle("-fx-background-color: #ecf0f1;");
+        areaCentral.getStyleClass().add("content-area");
         setCenter(areaCentral);
+    }
+
+    private void actualizarEstiloBotonesSidebar(Button activo) {
+        Button[] botones = {btnExplorador, btnBuscarEtiqueta, btnFlashcards};
+        for (Button b : botones) {
+            b.getStyleClass().removeAll("sidebar-button", "sidebar-button-active");
+            if (b == activo) {
+                b.getStyleClass().add("sidebar-button-active");
+            } else {
+                b.getStyleClass().add("sidebar-button");
+            }
+        }
     }
 
     /**
@@ -160,26 +158,27 @@ public class MainView extends BorderPane {
         contenedor.setPadding(new Insets(15));
 
         Label titulo = new Label("Resultados para: \"" + termino + "\" (" + resultados.size() + ")");
-        titulo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titulo.getStyleClass().add("text-h2");
         contenedor.getChildren().add(titulo);
 
         if (resultados.isEmpty()) {
             Label sinResultados = new Label("No se encontraron archivos.");
-            sinResultados.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 14px;");
+            sinResultados.getStyleClass().add("text-body");
             contenedor.getChildren().add(sinResultados);
         } else {
             for (DriveFile archivo : resultados) {
                 Button item = new Button(archivo.getNombre()
                         + "  (" + archivo.getTipoMime() + ")");
-                item.setStyle("-fx-background-color: white; -fx-cursor: hand; "
-                        + "-fx-font-size: 13px; -fx-pref-width: 500; -fx-alignment: CENTER-LEFT;");
+                item.getStyleClass().add("modern-list-cell");
+                item.setPrefWidth(500);
+                item.setAlignment(Pos.CENTER_LEFT);
                 item.setOnAction(e -> mainController.mostrarVisorDocumento(archivo));
                 contenedor.getChildren().add(item);
             }
         }
 
         Button btnVolver = new Button("Volver al Explorador");
-        btnVolver.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;");
+        btnVolver.getStyleClass().add("modern-button-primary");
         btnVolver.setOnAction(e -> mainController.mostrarExplorador());
         contenedor.getChildren().add(btnVolver);
 
