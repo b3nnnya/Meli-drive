@@ -23,6 +23,7 @@ public class FlashcardView extends VBox {
     private Label labelIndicador;
     private Label labelContador;
     private Label labelArchivoAsociado;
+    private javafx.scene.image.ImageView imageViewAsociada;
     private Button btnFacil;
     private Button btnDificil;
     private StackPane tarjeta;
@@ -57,23 +58,35 @@ public class FlashcardView extends VBox {
 
         // Tarjeta
         tarjeta = new StackPane();
-        tarjeta.setPrefSize(500, 200);
-        tarjeta.setMaxSize(500, 200);
+        tarjeta.setPrefSize(500, 300);
+        tarjeta.setMaxSize(500, 300);
         tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
                 + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
 
+        VBox tarjetaContenidoBox = new VBox(10);
+        tarjetaContenidoBox.setAlignment(Pos.CENTER);
+        
         labelContenido = new Label();
         labelContenido.setStyle("-fx-font-size: 18px; -fx-text-fill: #2d3436; -fx-wrap-text: true;");
         labelContenido.setWrapText(true);
         labelContenido.setMaxWidth(450);
         labelContenido.setAlignment(Pos.CENTER);
 
+        imageViewAsociada = new javafx.scene.image.ImageView();
+        imageViewAsociada.setPreserveRatio(true);
+        imageViewAsociada.setFitWidth(400);
+        imageViewAsociada.setFitHeight(180);
+        imageViewAsociada.setVisible(false);
+        imageViewAsociada.setManaged(false);
+
+        tarjetaContenidoBox.getChildren().addAll(labelContenido, imageViewAsociada);
+
         labelArchivoAsociado = new Label();
         labelArchivoAsociado.setStyle("-fx-font-size: 11px; -fx-text-fill: #95a5a6;");
         StackPane.setAlignment(labelArchivoAsociado, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(labelArchivoAsociado, new Insets(10));
 
-        tarjeta.getChildren().addAll(labelContenido, labelArchivoAsociado);
+        tarjeta.getChildren().addAll(tarjetaContenidoBox, labelArchivoAsociado);
 
         Label instruccion = new Label("(Haz clic en la tarjeta para voltearla)");
         instruccion.setStyle("-fx-font-size: 11px; -fx-text-fill: #b2bec3;");
@@ -137,8 +150,20 @@ public class FlashcardView extends VBox {
         if (actual.getArchivoAsociado() != null) {
             labelArchivoAsociado.setText("Archivo: " + actual.getArchivoAsociado().getNombre());
             labelArchivoAsociado.setVisible(true);
+
+            String ruta = actual.getArchivoAsociado().getRutaFisica();
+            if (ruta != null && actual.getArchivoAsociado().getTipoMime().startsWith("image/")) {
+                imageViewAsociada.setImage(new javafx.scene.image.Image(new java.io.File(ruta).toURI().toString()));
+                imageViewAsociada.setVisible(true);
+                imageViewAsociada.setManaged(true);
+            } else {
+                imageViewAsociada.setVisible(false);
+                imageViewAsociada.setManaged(false);
+            }
         } else {
             labelArchivoAsociado.setVisible(false);
+            imageViewAsociada.setVisible(false);
+            imageViewAsociada.setManaged(false);
         }
 
         labelIndicador.getParent().setVisible(true);
@@ -162,6 +187,9 @@ public class FlashcardView extends VBox {
             tarjeta.setStyle("-fx-background-color: #ffeaa7; -fx-background-radius: 12; "
                     + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
             contenedorBotones.setVisible(true);
+            
+            imageViewAsociada.setVisible(false);
+            imageViewAsociada.setManaged(false);
         } else {
             labelContenido.setText(actual.getPregunta());
             labelIndicador.setText("PREGUNTA");
@@ -169,6 +197,11 @@ public class FlashcardView extends VBox {
             tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
                     + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
             contenedorBotones.setVisible(false);
+            
+            if (actual.getArchivoAsociado() != null && actual.getArchivoAsociado().getRutaFisica() != null && actual.getArchivoAsociado().getTipoMime().startsWith("image/")) {
+                imageViewAsociada.setVisible(true);
+                imageViewAsociada.setManaged(true);
+            }
         }
         mostrandoPregunta = !mostrandoPregunta;
     }
@@ -191,6 +224,8 @@ public class FlashcardView extends VBox {
         labelIndicador.getParent().setVisible(false);
         labelArchivoAsociado.setVisible(false);
         contenedorBotones.setVisible(false);
+        imageViewAsociada.setVisible(false);
+        imageViewAsociada.setManaged(false);
         tarjeta.setStyle("-fx-background-color: #d5f5e3; -fx-background-radius: 12; "
                 + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 3);");
     }
