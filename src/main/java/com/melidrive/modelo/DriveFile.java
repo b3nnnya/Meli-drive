@@ -109,6 +109,21 @@ public class DriveFile {
     }
 
     /**
+     * Busca una etiqueta por nombre dentro de las etiquetas del archivo.
+     * @param nombre el nombre de la etiqueta a buscar
+     * @return la Etiqueta encontrada o null si no existe
+     */
+    public Etiqueta buscarEtiquetaPorNombre(String nombre) {
+        if (nombre == null || etiquetas == null) return null;
+        for (Etiqueta etiqueta : etiquetas) {
+            if (etiqueta.getNombre().equalsIgnoreCase(nombre)) {
+                return etiqueta;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Representación en texto del archivo para depuración.
      */
     @Override
