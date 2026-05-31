@@ -3,6 +3,7 @@ package com.melidrive.controlador;
 import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.DriveFolder;
 import com.melidrive.modelo.GestorArchivos;
+import com.melidrive.util.ThemeManager;
 import com.melidrive.vista.MainView;
 
 /**
@@ -14,6 +15,7 @@ public class MainController {
 
     private GestorArchivos gestorArchivos;
     private MainView mainView;
+    private ThemeManager themeManager;
 
     private ExploradorController exploradorController;
     private FlashcardController flashcardController;
@@ -37,6 +39,20 @@ public class MainController {
      * Vincula la vista principal con este controlador.
      * Se llama desde MainApp después de crear ambos.
      */
+    public void setThemeManager(ThemeManager themeManager) {
+        this.themeManager = themeManager;
+    }
+    
+    public ThemeManager getThemeManager() {
+        return themeManager;
+    }
+    
+    public void toggleModoOscuro() {
+        if (themeManager != null) {
+            themeManager.toggleModoOscuro();
+        }
+    }
+
     public void setMainView(MainView mainView) {
         this.mainView = mainView;
         mostrarExplorador();
