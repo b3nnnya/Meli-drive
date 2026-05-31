@@ -19,6 +19,7 @@ public final class IconosUtil {
         VIDEO("icons/video.png"),
         AUDIO("icons/audio.png"),
         TEXTO("icons/text.png"),
+        COMPRIMIDO("icons/zip.png"),
         ARCHIVO_GENERICO("icons/generic.png");
 
         private final String rutaIcono;
@@ -97,6 +98,12 @@ public final class IconosUtil {
         if (mime.contains("presentation") || mime.contains("powerpoint")
                 || mime.contains("presentationml")) {
             return TipoIcono.PRESENTACION;
+        }
+
+        // Archivos comprimidos
+        if (mime.contains("zip") || mime.contains("rar") 
+                || mime.contains("tar") || mime.contains("7z")) {
+            return TipoIcono.COMPRIMIDO;
         }
 
         return TipoIcono.ARCHIVO_GENERICO;
