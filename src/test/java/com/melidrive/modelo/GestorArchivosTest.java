@@ -47,7 +47,7 @@ public class GestorArchivosTest {
         DriveFile archivo = gestor.registrarArchivo("Nota.txt", "text/plain", 100, carpeta);
         
         assertEquals(1, carpeta.getArchivos().size());
-        boolean eliminado = gestor.eliminarArchivo(archivo);
+        boolean eliminado = gestor.eliminarArchivo(archivo, carpeta);
         
         assertTrue(eliminado);
         assertEquals(0, carpeta.getArchivos().size());

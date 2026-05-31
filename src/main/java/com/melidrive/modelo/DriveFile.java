@@ -22,6 +22,9 @@ public class DriveFile {
     // Lista de etiquetas asociadas al documento (Reemplazo manual del OCR automatizado)
     private List<Etiqueta> etiquetas;
 
+    // Opcional: ruta real del archivo en disco
+    private String rutaFisica;
+
     /**
      * Constructor (Método especial)
      * Es el "molde" que usamos cuando creamos un nuevo objeto usando la palabra 'new'.
@@ -34,6 +37,7 @@ public class DriveFile {
         this.sizeEnBytes = sizeEnBytes;
         this.contenidoExtraido = ""; // Inicialmente vacío
         this.etiquetas = new ArrayList<>(); // Inicializar lista para evitar nulidad
+        this.rutaFisica = null;
     }
 
     /**
@@ -106,6 +110,14 @@ public class DriveFile {
 
     public void eliminarEtiqueta(Etiqueta etiqueta) {
         this.etiquetas.remove(etiqueta);
+    }
+
+    public String getRutaFisica() {
+        return rutaFisica;
+    }
+
+    public void setRutaFisica(String rutaFisica) {
+        this.rutaFisica = rutaFisica;
     }
 
     /**

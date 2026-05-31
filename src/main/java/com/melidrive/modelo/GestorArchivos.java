@@ -3,6 +3,12 @@ package com.melidrive.modelo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /**
  * Gestor Central de Archivos que administra el sistema de carpetas
@@ -27,6 +33,43 @@ public class GestorArchivos {
         
         carpetaDestino.agregarArchivo(nuevoArchivo);
         return nuevoArchivo;
+    }
+
+    /**
+     * Importa un archivo físico al sistema, copiándolo a una carpeta local y registrándolo.
+     */
+    public DriveFile importarArchivoFisico(File archivoOriginal, DriveFolder carpetaDestino) {
+        try {
+            Path dirDestino = Paths.get("data", "archivos");
+            if (!Files.exists(dirDestino)) {
+                Files.createDirectories(dirDestino);
+            }
+            
+            String nombreArchivo = archivoOriginal.getName();
+            String idGenerado = UUID.randomUUID().toString();
+            // Para evitar colisiones, usamos un prefijo con el ID
+            String nombreUnico = idGenerado.substring(0, 8) + "_" + nombreArchivo;
+            Path pathDestino = dirDestino.resolve(nombreUnico);
+            
+            Files.copy(archivoOriginal.toPath(), pathDestino, StandardCopyOption.REPLACE_EXISTING);
+            
+            // Determinar tipo Mime básico
+            String tipoMime = "application/octet-stream";
+            if (nombreArchivo.toLowerCase().endsWith(".pdf")) tipoMime = "application/pdf";
+            else if (nombreArchivo.toLowerCase().endsWith(".png")) tipoMime = "image/png";
+            else if (nombreArchivo.toLowerCase().endsWith(".jpg") || nombreArchivo.toLowerCase().endsWith(".jpeg")) tipoMime = "image/jpeg";
+            
+            DriveFile nuevoArchivo = new DriveFile(idGenerado, nombreArchivo, tipoMime, archivoOriginal.length());
+            nuevoArchivo.setRutaFisica(pathDestino.toAbsolutePath().toString());
+            
+            carpetaDestino.agregarArchivo(nuevoArchivo);
+            System.out.println("Archivo físico importado: " + nombreArchivo);
+            return nuevoArchivo;
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al importar el archivo físico: " + e.getMessage());
+            return null;
+        }
     }
 
     /**

@@ -23,6 +23,7 @@ public class FlashcardView extends VBox {
     private Label labelIndicador;
     private Label labelContador;
     private Label labelArchivoAsociado;
+    private javafx.scene.image.ImageView imageViewAsociada;
     private Button btnFacil;
     private Button btnDificil;
     private StackPane tarjeta;
@@ -33,22 +34,22 @@ public class FlashcardView extends VBox {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(20);
         this.setPadding(new Insets(30));
-        this.setStyle("-fx-background-color: #ecf0f1;");
+        this.getStyleClass().add("content-area");
 
         // Título
         Label titulo = new Label("Modo Estudio - Repaso Espaciado");
-        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titulo.getStyleClass().add("text-h1");
 
         // Progreso
         labelProgreso = new Label();
-        labelProgreso.setStyle("-fx-font-size: 13px; -fx-text-fill: #7f8c8d;");
+        labelProgreso.getStyleClass().add("text-body");
 
         // Indicador (Pregunta / Respuesta) y Contador
         labelIndicador = new Label("PREGUNTA");
-        labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
+        labelIndicador.getStyleClass().add("text-small");
         
         labelContador = new Label();
-        labelContador.setStyle("-fx-font-size: 11px; -fx-text-fill: #7f8c8d; -fx-font-weight: bold;");
+        labelContador.getStyleClass().add("text-caption");
 
         Region spacerIndicador = new Region();
         HBox.setHgrow(spacerIndicador, Priority.ALWAYS);
@@ -57,38 +58,49 @@ public class FlashcardView extends VBox {
 
         // Tarjeta
         tarjeta = new StackPane();
-        tarjeta.setPrefSize(500, 200);
-        tarjeta.setMaxSize(500, 200);
-        tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
+        tarjeta.setPrefSize(500, 300);
+        tarjeta.setMaxSize(500, 300);
+        tarjeta.getStyleClass().add("flashcard");
 
+        VBox tarjetaContenidoBox = new VBox(10);
+        tarjetaContenidoBox.setAlignment(Pos.CENTER);
+        
         labelContenido = new Label();
-        labelContenido.setStyle("-fx-font-size: 18px; -fx-text-fill: #2d3436; -fx-wrap-text: true;");
+        labelContenido.getStyleClass().add("text-h2");
         labelContenido.setWrapText(true);
         labelContenido.setMaxWidth(450);
         labelContenido.setAlignment(Pos.CENTER);
 
+        imageViewAsociada = new javafx.scene.image.ImageView();
+        imageViewAsociada.setPreserveRatio(true);
+        imageViewAsociada.setFitWidth(400);
+        imageViewAsociada.setFitHeight(180);
+        imageViewAsociada.setVisible(false);
+        imageViewAsociada.setManaged(false);
+
+        tarjetaContenidoBox.getChildren().addAll(labelContenido, imageViewAsociada);
+
         labelArchivoAsociado = new Label();
-        labelArchivoAsociado.setStyle("-fx-font-size: 11px; -fx-text-fill: #95a5a6;");
+        labelArchivoAsociado.getStyleClass().add("text-small");
         StackPane.setAlignment(labelArchivoAsociado, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(labelArchivoAsociado, new Insets(10));
 
-        tarjeta.getChildren().addAll(labelContenido, labelArchivoAsociado);
+        tarjeta.getChildren().addAll(tarjetaContenidoBox, labelArchivoAsociado);
 
         Label instruccion = new Label("(Haz clic en la tarjeta para voltearla)");
-        instruccion.setStyle("-fx-font-size: 11px; -fx-text-fill: #b2bec3;");
+        instruccion.getStyleClass().add("text-caption");
 
         tarjeta.setOnMouseClicked(e -> voltearTarjeta());
 
         // Botones de calificación
         btnFacil = new Button("Fácil");
-        btnFacil.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; "
-                + "-fx-font-size: 14px; -fx-cursor: hand; -fx-pref-width: 120;");
+        btnFacil.getStyleClass().add("modern-button-primary");
+        btnFacil.setPrefWidth(120);
         btnFacil.setOnAction(e -> calificar(2));
 
         btnDificil = new Button("Difícil");
-        btnDificil.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; "
-                + "-fx-font-size: 14px; -fx-cursor: hand; -fx-pref-width: 120;");
+        btnDificil.getStyleClass().add("modern-button-secondary");
+        btnDificil.setPrefWidth(120);
         btnDificil.setOnAction(e -> calificar(1));
 
         contenedorBotones = new VBox(10);
@@ -99,8 +111,7 @@ public class FlashcardView extends VBox {
 
         // Botón iniciar sesión
         Button btnIniciar = new Button("Iniciar Sesión de Estudio");
-        btnIniciar.setStyle("-fx-background-color: #6c5ce7; -fx-text-fill: white; "
-                + "-fx-font-size: 14px; -fx-cursor: hand;");
+        btnIniciar.getStyleClass().add("modern-button-primary");
         btnIniciar.setOnAction(e -> {
             controller.iniciarSesionDeEstudio();
             mostrarTarjetaActual();
@@ -130,22 +141,30 @@ public class FlashcardView extends VBox {
         mostrandoPregunta = true;
         labelContenido.setText(actual.getPregunta());
         labelIndicador.setText("PREGUNTA");
-        labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
         
         labelContador.setText((controller.getIndiceActual() + 1) + " / " + controller.getTotalSesion());
         
         if (actual.getArchivoAsociado() != null) {
             labelArchivoAsociado.setText("Archivo: " + actual.getArchivoAsociado().getNombre());
             labelArchivoAsociado.setVisible(true);
+
+            String ruta = actual.getArchivoAsociado().getRutaFisica();
+            if (ruta != null && actual.getArchivoAsociado().getTipoMime().startsWith("image/")) {
+                imageViewAsociada.setImage(new javafx.scene.image.Image(new java.io.File(ruta).toURI().toString()));
+                imageViewAsociada.setVisible(true);
+                imageViewAsociada.setManaged(true);
+            } else {
+                imageViewAsociada.setVisible(false);
+                imageViewAsociada.setManaged(false);
+            }
         } else {
             labelArchivoAsociado.setVisible(false);
+            imageViewAsociada.setVisible(false);
+            imageViewAsociada.setManaged(false);
         }
 
         labelIndicador.getParent().setVisible(true);
         contenedorBotones.setVisible(false);
-
-        tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
-                + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
     }
 
     /**
@@ -158,17 +177,19 @@ public class FlashcardView extends VBox {
         if (mostrandoPregunta) {
             labelContenido.setText(actual.getRespuesta());
             labelIndicador.setText("RESPUESTA");
-            labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #e17055; -fx-font-weight: bold;");
-            tarjeta.setStyle("-fx-background-color: #ffeaa7; -fx-background-radius: 12; "
-                    + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
             contenedorBotones.setVisible(true);
+            
+            imageViewAsociada.setVisible(false);
+            imageViewAsociada.setManaged(false);
         } else {
             labelContenido.setText(actual.getPregunta());
             labelIndicador.setText("PREGUNTA");
-            labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
-            tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
-                    + "-fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);");
             contenedorBotones.setVisible(false);
+            
+            if (actual.getArchivoAsociado() != null && actual.getArchivoAsociado().getRutaFisica() != null && actual.getArchivoAsociado().getTipoMime().startsWith("image/")) {
+                imageViewAsociada.setVisible(true);
+                imageViewAsociada.setManaged(true);
+            }
         }
         mostrandoPregunta = !mostrandoPregunta;
     }
@@ -187,11 +208,10 @@ public class FlashcardView extends VBox {
     private void mostrarSesionFinalizada() {
         labelContenido.setText("¡Sesión completada!\nNo hay más tarjetas por repasar hoy.\n"
                 + "Fácil: " + controller.getRespuestasFacil() + " | Difícil: " + controller.getRespuestasDificil());
-        labelContenido.setStyle("-fx-font-size: 16px; -fx-text-fill: #27ae60; -fx-wrap-text: true;");
         labelIndicador.getParent().setVisible(false);
         labelArchivoAsociado.setVisible(false);
         contenedorBotones.setVisible(false);
-        tarjeta.setStyle("-fx-background-color: #d5f5e3; -fx-background-radius: 12; "
-                + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 3);");
+        imageViewAsociada.setVisible(false);
+        imageViewAsociada.setManaged(false);
     }
 }

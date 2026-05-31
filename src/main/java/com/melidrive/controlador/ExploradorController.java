@@ -79,4 +79,18 @@ public class ExploradorController {
         System.out.println("Solicitando abrir el archivo: " + archivo.getNombre());
         mainController.mostrarVisorDocumento(archivo);
     }
+
+    /**
+     * Acción: El usuario importa un archivo real desde su disco.
+     */
+    public void importarArchivoReal(java.io.File archivo) {
+        if (archivo != null && archivo.exists()) {
+            DriveFile nuevo = gestorArchivos.importarArchivoFisico(archivo, this.carpetaActual);
+            if (nuevo != null) {
+                System.out.println("Archivo importado correctamente: " + nuevo.getNombre());
+            } else {
+                System.out.println("No se pudo importar el archivo.");
+            }
+        }
+    }
 }

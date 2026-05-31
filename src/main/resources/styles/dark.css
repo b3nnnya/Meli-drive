@@ -1,42 +1,62 @@
 /*
  * Meli-Drive — Tema Oscuro (Dark Mode)
- * Se aplica sobre main.css cuando el usuario activa el modo oscuro.
  */
 
 .root {
     -fx-background-color: #0f172a;
 }
 
+/* Typography Utilities */
+.text-h1 { -fx-text-fill: #f8fafc; }
+.text-h2 { -fx-text-fill: #f1f5f9; }
+.text-h3 { -fx-text-fill: #e2e8f0; }
+.text-body { -fx-text-fill: #cbd5e1; }
+.text-caption { -fx-text-fill: #94a3b8; }
+.text-small { -fx-text-fill: #64748b; }
+
+/* Structural */
 .topbar {
     -fx-background-color: #1e293b;
     -fx-border-color: #334155;
-}
-
-.search-field {
-    -fx-background-color: #334155;
-    -fx-text-fill: #e2e8f0;
-    -fx-prompt-text-fill: #94a3b8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 4);
 }
 
 .sidebar {
-    -fx-background-color: #020617;
+    -fx-background-color: #0f172a;
+    -fx-border-color: #334155;
 }
 
 .sidebar-title {
-    -fx-text-fill: #f1f5f9;
+    -fx-text-fill: #f8fafc;
 }
 
 .sidebar-button {
+    -fx-background-color: transparent;
     -fx-text-fill: #94a3b8;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 16 12 16;
+    -fx-background-radius: 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+    -fx-pref-width: 160;
 }
 
 .sidebar-button:hover {
     -fx-background-color: #1e293b;
+    -fx-text-fill: #f1f5f9;
 }
 
 .sidebar-button-active {
-    -fx-background-color: #1d4ed8;
-    -fx-text-fill: #f8fafc;
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #818cf8;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 16 12 16;
+    -fx-background-radius: 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+    -fx-pref-width: 160;
 }
 
 .content-area {
@@ -44,91 +64,107 @@
 }
 
 .toolbar {
-    -fx-background-color: #1e293b;
+    -fx-background-color: transparent;
 }
 
-.file-card {
+/* Inputs */
+.search-field {
     -fx-background-color: #1e293b;
+    -fx-text-fill: #f1f5f9;
+    -fx-prompt-text-fill: #64748b;
+}
+.search-field:focused {
+    -fx-background-color: #0f172a;
+    -fx-border-color: #6366f1;
+}
+
+.modern-text-field {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #f8fafc;
+    -fx-border-color: #475569;
+}
+.modern-text-field:focused {
+    -fx-border-color: #818cf8;
+}
+
+/* Buttons */
+.modern-button-primary {
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(79, 70, 229, 0.4), 10, 0, 0, 4);
+}
+.modern-button-primary:hover {
+    -fx-background-color: #6366f1;
+}
+
+.modern-button-secondary {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: #475569;
+}
+.modern-button-secondary:hover {
+    -fx-background-color: #334155;
+    -fx-border-color: #64748b;
+}
+
+/* Cards (Folders & Files) */
+.modern-card {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 4);
 }
-
-.file-card:hover {
+.modern-card:hover {
     -fx-background-color: #334155;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 18, 0, 0, 6);
-}
-
-.file-title {
-    -fx-text-fill: #f1f5f9;
-}
-
-.file-subtitle {
-    -fx-text-fill: #94a3b8;
+    -fx-border-color: #475569;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 8);
 }
 
 .flashcard {
     -fx-background-color: #1e293b;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 18, 0, 0, 6);
+    -fx-border-color: #334155;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 24, 0, 0, 10);
 }
 
-.flashcard-question {
-    -fx-text-fill: #f1f5f9;
-}
-
-.flashcard-answer {
-    -fx-text-fill: #cbd5e1;
-}
-
-.primary-button {
-    -fx-background-color: #2563eb;
-    -fx-text-fill: #f8fafc;
-}
-
-.primary-button:hover {
-    -fx-background-color: #3b82f6;
-}
-
-.secondary-button {
-    -fx-background-color: #475569;
-    -fx-text-fill: #f1f5f9;
-}
-
-.secondary-button:hover {
-    -fx-background-color: #64748b;
-}
-
-/* Labels generales en modo oscuro */
-.label {
-    -fx-text-fill: #e2e8f0;
-}
-
-/* ScrollPane en modo oscuro */
+/* ScrollPane */
 .scroll-pane {
     -fx-background: #0f172a;
     -fx-background-color: #0f172a;
 }
-
 .scroll-pane .viewport {
     -fx-background-color: #0f172a;
 }
 
-/* TextArea en modo oscuro */
-.text-area {
+/* ListView */
+.modern-list-view {
+    -fx-background-color: transparent;
+}
+.modern-list-cell {
     -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+}
+.modern-list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* Base elements */
+.label {
     -fx-text-fill: #e2e8f0;
 }
 
+.text-area {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #f8fafc;
+}
 .text-area .content {
     -fx-background-color: #1e293b;
 }
-
-/* TextField en modo oscuro */
 .text-field {
-    -fx-background-color: #334155;
-    -fx-text-fill: #e2e8f0;
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #f8fafc;
     -fx-prompt-text-fill: #64748b;
 }
-
-/* Separator en modo oscuro */
 .separator .line {
     -fx-border-color: #334155;
 }
+
