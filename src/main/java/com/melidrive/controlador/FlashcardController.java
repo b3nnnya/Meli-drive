@@ -19,6 +19,8 @@ public class FlashcardController {
     private List<Flashcard> todasLasFlashcards;
     private List<Flashcard> sesionActual;
     private int indiceActual;
+    private int respuestasFacil;
+    private int respuestasDificil;
 
     /**
      * Constructor. Requiere el MainController para acceder al modelo global.
@@ -28,6 +30,8 @@ public class FlashcardController {
         this.todasLasFlashcards = new ArrayList<>();
         this.sesionActual = new ArrayList<>();
         this.indiceActual = 0;
+        this.respuestasFacil = 0;
+        this.respuestasDificil = 0;
         System.out.println("FlashcardController inicializado.");
     }
 
@@ -84,14 +88,17 @@ public class FlashcardController {
         Flashcard actual = getFlashcardActual();
         if (actual != null) {
             actual.registrarRepaso(calificacion);
+            if (calificacion == 2) {
+                respuestasFacil++;
+            } else {
+                respuestasDificil++;
+            }
             System.out.println("Tarjeta calificada (" + calificacion + "): " + actual.getPregunta());
             indiceActual++;
 
             if (indiceActual >= sesionActual.size()) {
-                System.out.println("Sesión de estudio completada.");
-                // TODO: Notificar a la Vista para mostrar resumen de sesión
-            } else {
-                // TODO: Notificar a la Vista para mostrar la siguiente tarjeta
+                System.out.println("Sesion de estudio completada. Facil: "
+                        + respuestasFacil + " | Dificil: " + respuestasDificil);
             }
         }
     }
@@ -139,10 +146,35 @@ public class FlashcardController {
         return sesionActual.isEmpty() || indiceActual >= sesionActual.size();
     }
 
-    /**
-     * Devuelve la referencia al controlador principal.
-     */
     public MainController getMainController() {
         return mainController;
+    }
+
+    /**
+     * Devuelve el numero de respuestas marcadas como facil en la sesion actual.
+     */
+    public int getRespuestasFacil() {
+        return respuestasFacil;
+    }
+
+    /**
+     * Devuelve el numero de respuestas marcadas como dificil en la sesion actual.
+     */
+    public int getRespuestasDificil() {
+        return respuestasDificil;
+    }
+
+    /**
+     * Devuelve el indice actual dentro de la sesion de estudio.
+     */
+    public int getIndiceActual() {
+        return indiceActual;
+    }
+
+    /**
+     * Devuelve el total de tarjetas en la sesion actual.
+     */
+    public int getTotalSesion() {
+        return sesionActual.size();
     }
 }
