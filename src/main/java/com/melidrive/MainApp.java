@@ -19,8 +19,16 @@ public class MainApp extends Application {
         mainController.setMainView(mainView);
 
         Scene scene = new Scene(mainView, 960, 640);
+        
+        com.melidrive.util.ThemeManager themeManager = new com.melidrive.util.ThemeManager();
+        themeManager.setScene(scene);
+        themeManager.aplicarEstiloPrincipal();
+        
+        mainController.setThemeManager(themeManager);
 
         primaryStage.setTitle("Meli-Drive - Gestión Académica");
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
