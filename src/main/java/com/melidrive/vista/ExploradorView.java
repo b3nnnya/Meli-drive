@@ -35,14 +35,14 @@ public class ExploradorView extends VBox {
         toolbar.setAlignment(Pos.CENTER_LEFT);
         toolbar.setStyle("-fx-background-color: #dfe6e9;");
 
-        Button btnVolver = new Button("← Atrás");
+        Button btnVolver = new Button("Atrás");
         btnVolver.setStyle("-fx-background-color: #636e72; -fx-text-fill: white; -fx-cursor: hand;");
         btnVolver.setOnAction(e -> {
             controller.volverAtras();
             refrescar();
         });
 
-        Button btnNuevaCarpeta = new Button("📁 Nueva Carpeta");
+        Button btnNuevaCarpeta = new Button("Nueva Carpeta");
         btnNuevaCarpeta.setStyle("-fx-background-color: #0984e3; -fx-text-fill: white; -fx-cursor: hand;");
         btnNuevaCarpeta.setOnAction(e -> {
             DialogoNuevaCarpeta dialogo = new DialogoNuevaCarpeta();
@@ -84,7 +84,7 @@ public class ExploradorView extends VBox {
     public void refrescar() {
         contenedorArchivos.getChildren().clear();
         DriveFolder carpetaActual = controller.getCarpetaActual();
-        labelUbicacion.setText("📍 " + carpetaActual.getNombre());
+        labelUbicacion.setText(carpetaActual.getNombre());
 
         // Mostrar subcarpetas
         for (DriveFolder subcarpeta : carpetaActual.getSubcarpetas()) {
@@ -100,7 +100,7 @@ public class ExploradorView extends VBox {
 
         // Mensaje si está vacía
         if (carpetaActual.getSubcarpetas().isEmpty() && carpetaActual.getArchivos().isEmpty()) {
-            Label vacio = new Label("📭 Esta carpeta está vacía");
+            Label vacio = new Label("Esta carpeta está vacía");
             vacio.setStyle("-fx-text-fill: #b2bec3; -fx-font-size: 16px;");
             contenedorArchivos.getChildren().add(vacio);
         }
@@ -124,7 +124,11 @@ public class ExploradorView extends VBox {
         nombre.setMaxWidth(100);
         nombre.setAlignment(Pos.CENTER);
 
-        item.getChildren().addAll(icono, nombre);
+        int totalElementos = carpeta.getSubcarpetas().size() + carpeta.getArchivos().size();
+        Label lblElementos = new Label(totalElementos + " elem.");
+        lblElementos.setStyle("-fx-font-size: 9px; -fx-text-fill: #7f8c8d;");
+
+        item.getChildren().addAll(icono, nombre, lblElementos);
 
         // Doble clic para entrar
         item.setOnMouseClicked(e -> {
