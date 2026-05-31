@@ -88,6 +88,21 @@ public class DriveFolder {
     }
 
     /**
+     * Busca una subcarpeta por nombre dentro de esta carpeta.
+     * @param nombre el nombre de la subcarpeta a buscar
+     * @return la DriveFolder encontrada o null si no existe
+     */
+    public DriveFolder buscarSubcarpetaPorNombre(String nombre) {
+        if (nombre == null) return null;
+        for (DriveFolder subcarpeta : subcarpetas) {
+            if (subcarpeta.getNombre().equalsIgnoreCase(nombre)) {
+                return subcarpeta;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Representación en texto de la carpeta para depuración.
      */
     @Override
