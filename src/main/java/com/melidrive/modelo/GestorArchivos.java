@@ -63,6 +63,33 @@ public class GestorArchivos {
         }
     }
 
+    /**
+     * Búsqueda recursiva de archivos que tengan una etiqueta con el nombre dado.
+     * @param nombreEtiqueta nombre de la etiqueta a buscar
+     * @return lista de archivos que contienen esa etiqueta
+     */
+    public List<DriveFile> buscarArchivosPorEtiqueta(String nombreEtiqueta) {
+        List<DriveFile> resultados = new ArrayList<>();
+        buscarPorEtiquetaRecursivo(carpetaRaiz, nombreEtiqueta.toLowerCase(), resultados);
+        return resultados;
+    }
+
+    private void buscarPorEtiquetaRecursivo(DriveFolder actual, String termino, List<DriveFile> resultados) {
+        for (DriveFile archivo : actual.getArchivos()) {
+            if (archivo.getEtiquetas() != null) {
+                for (Etiqueta etiqueta : archivo.getEtiquetas()) {
+                    if (etiqueta.getNombre().toLowerCase().contains(termino)) {
+                        resultados.add(archivo);
+                        break;
+                    }
+                }
+            }
+        }
+        for (DriveFolder subcarpeta : actual.getSubcarpetas()) {
+            buscarPorEtiquetaRecursivo(subcarpeta, termino, resultados);
+        }
+    }
+
     public DriveFolder getCarpetaRaiz() {
         return carpetaRaiz;
     }
