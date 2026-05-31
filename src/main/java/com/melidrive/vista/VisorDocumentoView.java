@@ -50,11 +50,11 @@ public class VisorDocumentoView extends HBox {
         // === PANEL IZQUIERDO: Contenido del documento ===
         VBox panelContenido = new VBox(15);
         panelContenido.setPadding(new Insets(20));
-        panelContenido.setStyle("-fx-background-color: #ecf0f1;");
+        panelContenido.getStyleClass().add("content-area");
         HBox.setHgrow(panelContenido, Priority.ALWAYS);
 
         Button btnVolver = new Button("Volver al Explorador");
-        btnVolver.setStyle("-fx-background-color: #636e72; -fx-text-fill: white; -fx-cursor: hand;");
+        btnVolver.getStyleClass().add("modern-button-secondary");
         btnVolver.setOnAction(e -> {
             if (pdfDoc != null) {
                 try { pdfDoc.close(); } catch (IOException ex) { ex.printStackTrace(); }
@@ -63,7 +63,7 @@ public class VisorDocumentoView extends HBox {
         });
 
         Label titulo = new Label(archivo != null ? archivo.getNombre() : "Sin archivo");
-        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titulo.getStyleClass().add("text-h1");
 
         // Info del archivo
         VBox infoBox = new VBox(5);
@@ -71,9 +71,9 @@ public class VisorDocumentoView extends HBox {
             Label tipo = new Label("Tipo: " + archivo.getTipoMime());
             Label size = new Label("Tamaño: " + formatearSize(archivo.getSizeEnBytes()));
             Label id = new Label("ID: " + archivo.getId());
-            tipo.setStyle("-fx-text-fill: #636e72;");
-            size.setStyle("-fx-text-fill: #636e72;");
-            id.setStyle("-fx-text-fill: #b2bec3; -fx-font-size: 10px;");
+            tipo.getStyleClass().add("text-body");
+            size.getStyleClass().add("text-body");
+            id.getStyleClass().add("text-small");
             infoBox.getChildren().addAll(tipo, size, id);
         }
 
@@ -81,10 +81,10 @@ public class VisorDocumentoView extends HBox {
         HBox toolbarVisor = new HBox(10);
         toolbarVisor.setAlignment(Pos.CENTER_LEFT);
         Label labelContenido = new Label("Visualización del Documento:");
-        labelContenido.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        labelContenido.getStyleClass().add("text-h2");
         
         Button btnRecortar = new Button("Crear Ejercicio desde Recorte");
-        btnRecortar.setStyle("-fx-background-color: #00b894; -fx-text-fill: white; -fx-cursor: hand;");
+        btnRecortar.getStyleClass().add("modern-button-primary");
         btnRecortar.setDisable(true); // Se habilita cuando hay un recorte seleccionado
         
         toolbarVisor.getChildren().addAll(labelContenido, btnRecortar);
@@ -100,7 +100,7 @@ public class VisorDocumentoView extends HBox {
         imageContainer.getChildren().addAll(imageView, seleccionRect);
 
         ScrollPane scrollVisor = new ScrollPane(imageContainer);
-        scrollVisor.setStyle("-fx-background-color: white;");
+        scrollVisor.getStyleClass().add("scroll-pane");
         VBox.setVgrow(scrollVisor, Priority.ALWAYS);
 
         // Eventos de ratón para el recorte
@@ -223,10 +223,10 @@ public class VisorDocumentoView extends HBox {
         VBox panelEtiquetas = new VBox(10);
         panelEtiquetas.setPadding(new Insets(15));
         panelEtiquetas.setPrefWidth(220);
-        panelEtiquetas.setStyle("-fx-background-color: #dfe6e9;");
+        panelEtiquetas.getStyleClass().add("sidebar");
 
         Label tituloEtiquetas = new Label("Etiquetas");
-        tituloEtiquetas.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        tituloEtiquetas.getStyleClass().add("text-h2");
 
         VBox listaEtiquetas = new VBox(5);
         if (archivo != null) {
@@ -253,7 +253,7 @@ public class VisorDocumentoView extends HBox {
 
             if (archivo.getEtiquetas().isEmpty()) {
                 Label sinEtiquetas = new Label("Sin etiquetas");
-                sinEtiquetas.setStyle("-fx-text-fill: #b2bec3;");
+                sinEtiquetas.getStyleClass().add("text-caption");
                 listaEtiquetas.getChildren().add(sinEtiquetas);
             }
         }
@@ -262,9 +262,10 @@ public class VisorDocumentoView extends HBox {
         Separator sep = new Separator();
         TextField campoEtiqueta = new TextField();
         campoEtiqueta.setPromptText("Nueva etiqueta...");
+        campoEtiqueta.getStyleClass().add("modern-text-field");
 
         Button btnAgregar = new Button("+ Agregar");
-        btnAgregar.setStyle("-fx-background-color: #6c5ce7; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 11px;");
+        btnAgregar.getStyleClass().add("modern-button-primary");
         btnAgregar.setOnAction(e -> {
             String nombre = campoEtiqueta.getText();
             if (nombre != null && !nombre.trim().isEmpty() && archivo != null) {
