@@ -51,9 +51,7 @@ public class MainView extends BorderPane {
         Button btnModoOscuro = new Button("Modo Oscuro");
         btnModoOscuro.setStyle("-fx-background-color: #34495e; -fx-text-fill: white; -fx-cursor: hand;");
         btnModoOscuro.setOnAction(e -> {
-            // Se llamara al ThemeManager desde MainApp mas adelante, 
-            // pero por ahora lo dejamos listo.
-            System.out.println("Toggle Modo Oscuro");
+            mainController.toggleModoOscuro();
         });
 
         Region spacer = new Region();
