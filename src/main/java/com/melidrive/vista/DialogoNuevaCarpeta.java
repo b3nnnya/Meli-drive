@@ -28,18 +28,19 @@ public class DialogoNuevaCarpeta {
         ventana.setResizable(false);
 
         Label label = new Label("Nombre de la carpeta:");
-        label.setStyle("-fx-font-size: 14px; -fx-text-fill: #2c3e50;");
+        label.getStyleClass().add("text-h3");
 
         TextField campo = new TextField();
         campo.setPromptText("Ej: Anatomía, Parcial 1...");
-        campo.setStyle("-fx-padding: 8; -fx-background-radius: 5;");
+        campo.getStyleClass().add("modern-text-field");
 
         Label labelError = new Label("El nombre no puede estar vacío.");
-        labelError.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 11px;");
+        labelError.getStyleClass().add("text-caption");
+        labelError.setStyle("-fx-text-fill: #e74c3c;");
         labelError.setVisible(false);
 
         Button btnCrear = new Button("Crear");
-        btnCrear.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 8 16; -fx-background-radius: 5;");
+        btnCrear.getStyleClass().add("modern-button-primary");
         btnCrear.setOnAction(e -> {
             String texto = campo.getText();
             if (texto != null && !texto.trim().isEmpty()) {
@@ -47,18 +48,18 @@ public class DialogoNuevaCarpeta {
                 ventana.close();
             } else {
                 labelError.setVisible(true);
-                campo.setStyle("-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #e74c3c; -fx-border-radius: 5;");
+                campo.setStyle("-fx-border-color: #e74c3c;");
             }
         });
 
         // Ocultar error al escribir
         campo.textProperty().addListener((obs, oldV, newV) -> {
             labelError.setVisible(false);
-            campo.setStyle("-fx-padding: 8; -fx-background-radius: 5;");
+            campo.setStyle("");
         });
 
         Button btnCancelar = new Button("Cancelar");
-        btnCancelar.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 8 16; -fx-background-radius: 5;");
+        btnCancelar.getStyleClass().add("modern-button-secondary");
         btnCancelar.setOnAction(e -> ventana.close());
 
         HBox botones = new HBox(10, btnCrear, btnCancelar);
@@ -66,9 +67,13 @@ public class DialogoNuevaCarpeta {
 
         VBox root = new VBox(8, label, campo, labelError, botones);
         root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: #ecf0f1;");
+        root.getStyleClass().add("content-area");
 
-        ventana.setScene(new Scene(root, 340, 180));
+        Scene scene = new Scene(root, 360, 200);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+        } catch (Exception ex) { }
+        ventana.setScene(scene);
         ventana.showAndWait();
 
         return resultado;
