@@ -18,6 +18,7 @@ public class MainController {
     private ExploradorController exploradorController;
     private FlashcardController flashcardController;
     private VisorDocumentoController visorDocumentoController;
+    private SidebarController sidebarController;
 
     public MainController() {
         this.gestorArchivos = new GestorArchivos();
@@ -25,6 +26,7 @@ public class MainController {
         this.exploradorController = new ExploradorController(this);
         this.flashcardController = new FlashcardController(this);
         this.visorDocumentoController = new VisorDocumentoController(this);
+        this.sidebarController = new SidebarController(this);
 
         cargarDatosDeEjemplo();
 
@@ -115,5 +117,18 @@ public class MainController {
 
     public VisorDocumentoController getVisorDocumentoController() {
         return visorDocumentoController;
+    }
+
+    public SidebarController getSidebarController() {
+        return sidebarController;
+    }
+
+    /**
+     * Cambia el area central a la vista de busqueda por etiquetas.
+     */
+    public void mostrarBusquedaPorEtiqueta() {
+        if (mainView != null) {
+            mainView.mostrarBusquedaPorEtiqueta(this);
+        }
     }
 }
