@@ -32,11 +32,11 @@ public class VisorDocumentoView extends HBox {
         panelContenido.setStyle("-fx-background-color: #ecf0f1;");
         HBox.setHgrow(panelContenido, Priority.ALWAYS);
 
-        Button btnVolver = new Button("← Volver al Explorador");
+        Button btnVolver = new Button("Volver al Explorador");
         btnVolver.setStyle("-fx-background-color: #636e72; -fx-text-fill: white; -fx-cursor: hand;");
         btnVolver.setOnAction(e -> mainController.mostrarExplorador());
 
-        Label titulo = new Label("📄 " + (archivo != null ? archivo.getNombre() : "Sin archivo"));
+        Label titulo = new Label(archivo != null ? archivo.getNombre() : "Sin archivo");
         titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         // Info del archivo
@@ -75,7 +75,7 @@ public class VisorDocumentoView extends HBox {
         panelEtiquetas.setPrefWidth(220);
         panelEtiquetas.setStyle("-fx-background-color: #dfe6e9;");
 
-        Label tituloEtiquetas = new Label("🏷️ Etiquetas");
+        Label tituloEtiquetas = new Label("Etiquetas");
         tituloEtiquetas.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         VBox listaEtiquetas = new VBox(5);
@@ -84,10 +84,12 @@ public class VisorDocumentoView extends HBox {
                 HBox fila = new HBox(5);
                 fila.setAlignment(Pos.CENTER_LEFT);
 
-                Label chip = new Label("● " + etiqueta.getNombre());
-                chip.setStyle("-fx-text-fill: " + etiqueta.getColorHex() + "; -fx-font-size: 12px;");
+                Label chip = new Label(etiqueta.getNombre());
+                chip.setStyle("-fx-background-color: " + etiqueta.getColorHex() + "22; "
+                        + "-fx-text-fill: " + etiqueta.getColorHex() + "; "
+                        + "-fx-padding: 4 10; -fx-background-radius: 12; -fx-font-size: 11px;");
 
-                Button btnEliminar = new Button("✕");
+                Button btnEliminar = new Button("x");
                 btnEliminar.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; "
                         + "-fx-cursor: hand; -fx-font-size: 10px;");
                 btnEliminar.setOnAction(e -> {

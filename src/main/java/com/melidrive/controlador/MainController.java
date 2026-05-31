@@ -3,6 +3,7 @@ package com.melidrive.controlador;
 import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.DriveFolder;
 import com.melidrive.modelo.GestorArchivos;
+import com.melidrive.util.ThemeManager;
 import com.melidrive.vista.MainView;
 
 /**
@@ -14,10 +15,12 @@ public class MainController {
 
     private GestorArchivos gestorArchivos;
     private MainView mainView;
+    private ThemeManager themeManager;
 
     private ExploradorController exploradorController;
     private FlashcardController flashcardController;
     private VisorDocumentoController visorDocumentoController;
+    private SidebarController sidebarController;
 
     public MainController() {
         this.gestorArchivos = new GestorArchivos();
@@ -25,6 +28,7 @@ public class MainController {
         this.exploradorController = new ExploradorController(this);
         this.flashcardController = new FlashcardController(this);
         this.visorDocumentoController = new VisorDocumentoController(this);
+        this.sidebarController = new SidebarController(this);
 
         cargarDatosDeEjemplo();
 
@@ -35,6 +39,20 @@ public class MainController {
      * Vincula la vista principal con este controlador.
      * Se llama desde MainApp después de crear ambos.
      */
+    public void setThemeManager(ThemeManager themeManager) {
+        this.themeManager = themeManager;
+    }
+    
+    public ThemeManager getThemeManager() {
+        return themeManager;
+    }
+    
+    public void toggleModoOscuro() {
+        if (themeManager != null) {
+            themeManager.toggleModoOscuro();
+        }
+    }
+
     public void setMainView(MainView mainView) {
         this.mainView = mainView;
         mostrarExplorador();
@@ -115,5 +133,18 @@ public class MainController {
 
     public VisorDocumentoController getVisorDocumentoController() {
         return visorDocumentoController;
+    }
+
+    public SidebarController getSidebarController() {
+        return sidebarController;
+    }
+
+    /**
+     * Cambia el area central a la vista de busqueda por etiquetas.
+     */
+    public void mostrarBusquedaPorEtiqueta() {
+        if (mainView != null) {
+            mainView.mostrarBusquedaPorEtiqueta(this);
+        }
     }
 }

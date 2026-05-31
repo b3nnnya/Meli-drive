@@ -74,4 +74,40 @@ public class DriveFolder {
     public List<DriveFolder> getSubcarpetas() {
         return subcarpetas;
     }
+
+    /**
+     * Cuenta el total de archivos en esta carpeta y todas sus subcarpetas.
+     * @return el número total de archivos recursivamente
+     */
+    public int contarArchivosRecursivo() {
+        int total = archivos.size();
+        for (DriveFolder subcarpeta : subcarpetas) {
+            total += subcarpeta.contarArchivosRecursivo();
+        }
+        return total;
+    }
+
+    /**
+     * Busca una subcarpeta por nombre dentro de esta carpeta.
+     * @param nombre el nombre de la subcarpeta a buscar
+     * @return la DriveFolder encontrada o null si no existe
+     */
+    public DriveFolder buscarSubcarpetaPorNombre(String nombre) {
+        if (nombre == null) return null;
+        for (DriveFolder subcarpeta : subcarpetas) {
+            if (subcarpeta.getNombre().equalsIgnoreCase(nombre)) {
+                return subcarpeta;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Representación en texto de la carpeta para depuración.
+     */
+    @Override
+    public String toString() {
+        return "DriveFolder{nombre='" + nombre + "', archivos=" + archivos.size()
+                + ", subcarpetas=" + subcarpetas.size() + "}";
+    }
 }

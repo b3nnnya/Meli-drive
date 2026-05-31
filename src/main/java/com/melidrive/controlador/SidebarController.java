@@ -35,7 +35,7 @@ public class SidebarController {
     public void irAMiUnidad() {
         this.seccionActiva = SeccionApp.MI_UNIDAD;
         System.out.println("Navegando a: Mi Unidad");
-        // TODO: Notificar al MainController para mostrar la vista del Explorador
+        mainController.mostrarExplorador();
     }
 
     /**
@@ -45,7 +45,7 @@ public class SidebarController {
     public void irABuscarPorEtiqueta() {
         this.seccionActiva = SeccionApp.BUSCAR_POR_ETIQUETA;
         System.out.println("Navegando a: Buscar por Etiqueta");
-        // TODO: Notificar al MainController para mostrar la vista de búsqueda por etiquetas
+        mainController.mostrarBusquedaPorEtiqueta();
     }
 
     /**
@@ -55,7 +55,7 @@ public class SidebarController {
     public void irAModoEstudio() {
         this.seccionActiva = SeccionApp.MODO_ESTUDIO;
         System.out.println("Navegando a: Modo Estudio (Flashcards)");
-        // TODO: Notificar al MainController para mostrar la vista de Flashcards
+        mainController.mostrarFlashcards();
     }
 
     /**

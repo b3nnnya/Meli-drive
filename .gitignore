@@ -2,6 +2,5 @@ target/
 .idea/
 *.iml
 .vscode/
-o u t /  
-.agents/
-.agent/
+out/
+

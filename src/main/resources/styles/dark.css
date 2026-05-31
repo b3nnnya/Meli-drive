@@ -1,0 +1,134 @@
+/*
+ * Meli-Drive — Tema Oscuro (Dark Mode)
+ * Se aplica sobre main.css cuando el usuario activa el modo oscuro.
+ */
+
+.root {
+    -fx-background-color: #0f172a;
+}
+
+.topbar {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+}
+
+.search-field {
+    -fx-background-color: #334155;
+    -fx-text-fill: #e2e8f0;
+    -fx-prompt-text-fill: #94a3b8;
+}
+
+.sidebar {
+    -fx-background-color: #020617;
+}
+
+.sidebar-title {
+    -fx-text-fill: #f1f5f9;
+}
+
+.sidebar-button {
+    -fx-text-fill: #94a3b8;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #1e293b;
+}
+
+.sidebar-button-active {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: #f8fafc;
+}
+
+.content-area {
+    -fx-background-color: #0f172a;
+}
+
+.toolbar {
+    -fx-background-color: #1e293b;
+}
+
+.file-card {
+    -fx-background-color: #1e293b;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 4);
+}
+
+.file-card:hover {
+    -fx-background-color: #334155;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 18, 0, 0, 6);
+}
+
+.file-title {
+    -fx-text-fill: #f1f5f9;
+}
+
+.file-subtitle {
+    -fx-text-fill: #94a3b8;
+}
+
+.flashcard {
+    -fx-background-color: #1e293b;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 18, 0, 0, 6);
+}
+
+.flashcard-question {
+    -fx-text-fill: #f1f5f9;
+}
+
+.flashcard-answer {
+    -fx-text-fill: #cbd5e1;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: #f8fafc;
+}
+
+.primary-button:hover {
+    -fx-background-color: #3b82f6;
+}
+
+.secondary-button {
+    -fx-background-color: #475569;
+    -fx-text-fill: #f1f5f9;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #64748b;
+}
+
+/* Labels generales en modo oscuro */
+.label {
+    -fx-text-fill: #e2e8f0;
+}
+
+/* ScrollPane en modo oscuro */
+.scroll-pane {
+    -fx-background: #0f172a;
+    -fx-background-color: #0f172a;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #0f172a;
+}
+
+/* TextArea en modo oscuro */
+.text-area {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #e2e8f0;
+}
+
+.text-area .content {
+    -fx-background-color: #1e293b;
+}
+
+/* TextField en modo oscuro */
+.text-field {
+    -fx-background-color: #334155;
+    -fx-text-fill: #e2e8f0;
+    -fx-prompt-text-fill: #64748b;
+}
+
+/* Separator en modo oscuro */
+.separator .line {
+    -fx-border-color: #334155;
+}

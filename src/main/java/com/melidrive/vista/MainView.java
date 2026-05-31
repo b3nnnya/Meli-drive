@@ -22,9 +22,16 @@ public class MainView extends BorderPane {
     private StackPane areaCentral;
     private Button btnExplorador;
     private Button btnFlashcards;
+    private Button btnBuscarEtiqueta;
 
     public MainView(MainController mainController) {
         this.mainController = mainController;
+
+        try {
+            this.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar main.css en MainView");
+        }
 
         // === BARRA SUPERIOR ===
         TextField buscador = new TextField();
@@ -41,7 +48,16 @@ public class MainView extends BorderPane {
             }
         });
 
-        HBox topBar = new HBox(10, buscador, btnBuscar);
+        Button btnModoOscuro = new Button("Modo Oscuro");
+        btnModoOscuro.setStyle("-fx-background-color: #34495e; -fx-text-fill: white; -fx-cursor: hand;");
+        btnModoOscuro.setOnAction(e -> {
+            mainController.toggleModoOscuro();
+        });
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox topBar = new HBox(10, buscador, btnBuscar, spacer, btnModoOscuro);
         topBar.setPadding(new Insets(10));
         topBar.setAlignment(Pos.CENTER_LEFT);
         topBar.setStyle("-fx-background-color: #2c3e50;");
@@ -61,8 +77,9 @@ public class MainView extends BorderPane {
 
         Separator separador = new Separator();
 
-        btnExplorador = new Button("📁  Mi Unidad");
-        btnFlashcards = new Button("📚  Modo Estudio");
+        btnExplorador = new Button("Mi Unidad");
+        btnBuscarEtiqueta = new Button("Buscar por Etiqueta");
+        btnFlashcards = new Button("Modo Estudio");
 
         String estiloBoton = "-fx-background-color: transparent; -fx-text-fill: #bdc3c7; "
                 + "-fx-font-size: 13px; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-pref-width: 160;";
@@ -70,21 +87,31 @@ public class MainView extends BorderPane {
                 + "-fx-font-size: 13px; -fx-cursor: hand; -fx-alignment: CENTER-LEFT; -fx-pref-width: 160;";
 
         btnExplorador.setStyle(estiloBotonActivo);
+        btnBuscarEtiqueta.setStyle(estiloBoton);
         btnFlashcards.setStyle(estiloBoton);
 
         btnExplorador.setOnAction(e -> {
-            mainController.mostrarExplorador();
+            mainController.getSidebarController().irAMiUnidad();
             btnExplorador.setStyle(estiloBotonActivo);
+            btnBuscarEtiqueta.setStyle(estiloBoton);
+            btnFlashcards.setStyle(estiloBoton);
+        });
+
+        btnBuscarEtiqueta.setOnAction(e -> {
+            mainController.getSidebarController().irABuscarPorEtiqueta();
+            btnBuscarEtiqueta.setStyle(estiloBotonActivo);
+            btnExplorador.setStyle(estiloBoton);
             btnFlashcards.setStyle(estiloBoton);
         });
 
         btnFlashcards.setOnAction(e -> {
-            mainController.mostrarFlashcards();
+            mainController.getSidebarController().irAModoEstudio();
             btnFlashcards.setStyle(estiloBotonActivo);
             btnExplorador.setStyle(estiloBoton);
+            btnBuscarEtiqueta.setStyle(estiloBoton);
         });
 
-        sidebar.getChildren().addAll(tituloSidebar, separador, btnExplorador, btnFlashcards);
+        sidebar.getChildren().addAll(tituloSidebar, separador, btnExplorador, btnBuscarEtiqueta, btnFlashcards);
         setLeft(sidebar);
 
         // === ÁREA CENTRAL ===
@@ -118,6 +145,14 @@ public class MainView extends BorderPane {
     }
 
     /**
+     * Reemplaza el contenido central con la vista de Búsqueda por Etiqueta.
+     */
+    public void mostrarBusquedaPorEtiqueta(MainController controller) {
+        BusquedaEtiquetaView vista = new BusquedaEtiquetaView(controller);
+        areaCentral.getChildren().setAll(vista);
+    }
+
+    /**
      * Muestra resultados de búsqueda en el área central.
      */
     private void mostrarResultadosBusqueda(List<DriveFile> resultados, String termino) {
@@ -134,7 +169,7 @@ public class MainView extends BorderPane {
             contenedor.getChildren().add(sinResultados);
         } else {
             for (DriveFile archivo : resultados) {
-                Button item = new Button("📄  " + archivo.getNombre()
+                Button item = new Button(archivo.getNombre()
                         + "  (" + archivo.getTipoMime() + ")");
                 item.setStyle("-fx-background-color: white; -fx-cursor: hand; "
                         + "-fx-font-size: 13px; -fx-pref-width: 500; -fx-alignment: CENTER-LEFT;");
@@ -143,7 +178,7 @@ public class MainView extends BorderPane {
             }
         }
 
-        Button btnVolver = new Button("← Volver al Explorador");
+        Button btnVolver = new Button("Volver al Explorador");
         btnVolver.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;");
         btnVolver.setOnAction(e -> mainController.mostrarExplorador());
         contenedor.getChildren().add(btnVolver);

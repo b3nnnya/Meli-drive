@@ -121,3 +121,9 @@
     -fx-font-size: 20px;
     -fx-text-fill: #374151;
 }
+
+.tag-chip {
+    -fx-padding: 4 10;
+    -fx-background-radius: 12;
+    -fx-font-size: 11px;
+}

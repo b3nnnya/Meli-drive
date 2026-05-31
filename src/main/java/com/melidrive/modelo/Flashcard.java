@@ -55,4 +55,16 @@ public class Flashcard {
 
     public LocalDate getProximaFechaRepaso() { return proximaFechaRepaso; }
     public int getNivelEstudio() { return nivelEstudio; }
+
+    /**
+     * Representación en texto de la flashcard para depuración.
+     * Muestra los primeros 30 caracteres de la pregunta.
+     */
+    @Override
+    public String toString() {
+        String preguntaCorta = pregunta.length() > 30
+                ? pregunta.substring(0, 30) + "..."
+                : pregunta;
+        return "Flashcard{pregunta='" + preguntaCorta + "', nivel=" + nivelEstudio + "}";
+    }
 }
