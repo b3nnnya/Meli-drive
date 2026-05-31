@@ -40,7 +40,7 @@ public class VisorDocumentoController {
         if (archivoAbierto != null) {
             System.out.println("Cerrando documento: " + archivoAbierto.getNombre());
             this.archivoAbierto = null;
-            // TODO: Notificar al MainController para volver a la vista del Explorador
+            mainController.mostrarExplorador();
         }
     }
 
