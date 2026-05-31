@@ -65,7 +65,6 @@ public class FlashcardController {
         this.indiceActual = 0;
 
         System.out.println("Sesión de estudio iniciada. Tarjetas pendientes: " + sesionActual.size());
-        // TODO: Notificar a la Vista para mostrar la primera tarjeta
     }
 
     /**

@@ -30,7 +30,6 @@ import java.io.IOException;
 public class VisorDocumentoView extends HBox {
 
     private VisorDocumentoController controller;
-    private MainController mainController;
 
     private ImageView imageView;
     private Image currentImage;
@@ -42,7 +41,6 @@ public class VisorDocumentoView extends HBox {
 
     public VisorDocumentoView(VisorDocumentoController controller, MainController mainController) {
         this.controller = controller;
-        this.mainController = mainController;
         this.setSpacing(0);
 
         DriveFile archivo = controller.getArchivoAbierto();

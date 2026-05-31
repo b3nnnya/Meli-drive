@@ -8,20 +8,20 @@ public class FlashcardTest {
 
     @Test
     public void testCrearFlashcardYRepasar() {
-        DriveFile archivoAsociado = new DriveFile("a-1", "Doc.pdf", "application/pdf", 100, null);
+        DriveFile archivoAsociado = new DriveFile("a-1", "Doc.pdf", "application/pdf", 100);
         Flashcard flashcard = new Flashcard("fc-1", archivoAsociado, "Pregunta?", "Respuesta!");
         
         assertEquals("fc-1", flashcard.getId());
         assertEquals("Pregunta?", flashcard.getPregunta());
         assertEquals("Respuesta!", flashcard.getRespuesta());
         assertEquals(archivoAsociado, flashcard.getArchivoAsociado());
-        assertEquals(0, flashcard.getNivelConocimiento());
-        assertNotNull(flashcard.getProximoRepaso());
+        assertEquals(0, flashcard.getNivelEstudio());
+        assertNotNull(flashcard.getProximaFechaRepaso());
         assertTrue(flashcard.toString().contains("Pregunta?"));
         
         // Simular un repaso exitoso
-        flashcard.repasar(2); // 2 = Fácil
-        assertEquals(1, flashcard.getNivelConocimiento());
-        assertTrue(flashcard.getProximoRepaso().isAfter(LocalDate.now()));
+        flashcard.registrarRepaso(2); // 2 = Fácil
+        assertEquals(1, flashcard.getNivelEstudio());
+        assertTrue(flashcard.getProximaFechaRepaso().isAfter(LocalDate.now()));
     }
 }
