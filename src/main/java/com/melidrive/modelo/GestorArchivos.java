@@ -107,6 +107,26 @@ public class GestorArchivos {
         return false;
     }
 
+    /**
+     * Mueve un archivo de una carpeta origen a una carpeta destino.
+     * @param archivo el archivo a mover
+     * @param origen la carpeta donde se encuentra actualmente
+     * @param destino la carpeta a donde se moverá
+     * @return true si se movió exitosamente
+     */
+    public boolean moverArchivo(DriveFile archivo, DriveFolder origen, DriveFolder destino) {
+        if (archivo == null || origen == null || destino == null) return false;
+
+        if (origen.getArchivos().remove(archivo)) {
+            destino.agregarArchivo(archivo);
+            System.out.println("Archivo '" + archivo.getNombre()
+                    + "' movido de '" + origen.getNombre()
+                    + "' a '" + destino.getNombre() + "'");
+            return true;
+        }
+        return false;
+    }
+
     public DriveFolder getCarpetaRaiz() {
         return carpetaRaiz;
     }
