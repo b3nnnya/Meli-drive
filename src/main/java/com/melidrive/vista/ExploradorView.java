@@ -53,13 +53,25 @@ public class ExploradorView extends VBox {
             }
         });
 
+        Button btnImportar = new Button("Importar Archivo");
+        btnImportar.setStyle("-fx-background-color: #00b894; -fx-text-fill: white; -fx-cursor: hand;");
+        btnImportar.setOnAction(e -> {
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Seleccionar Archivo Físico");
+            java.io.File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+            if (file != null) {
+                controller.importarArchivoReal(file);
+                refrescar();
+            }
+        });
+
         labelUbicacion = new Label();
         labelUbicacion.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2d3436;");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        toolbar.getChildren().addAll(btnVolver, btnNuevaCarpeta, spacer, labelUbicacion);
+        toolbar.getChildren().addAll(btnVolver, btnNuevaCarpeta, btnImportar, spacer, labelUbicacion);
         getChildren().add(toolbar);
 
         // === CONTENEDOR DE ARCHIVOS (GRID/FLOW) ===
