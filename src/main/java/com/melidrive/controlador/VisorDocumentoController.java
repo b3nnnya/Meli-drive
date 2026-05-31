@@ -52,7 +52,6 @@ public class VisorDocumentoController {
             archivoAbierto.agregarEtiqueta(etiqueta);
             System.out.println("Etiqueta '" + etiqueta.getNombre()
                     + "' agregada a " + archivoAbierto.getNombre());
-            // TODO: Notificar a la Vista para actualizar la lista de etiquetas
         }
     }
 
@@ -64,7 +63,6 @@ public class VisorDocumentoController {
             archivoAbierto.eliminarEtiqueta(etiqueta);
             System.out.println("Etiqueta '" + etiqueta.getNombre()
                     + "' eliminada de " + archivoAbierto.getNombre());
-            // TODO: Notificar a la Vista para actualizar la lista de etiquetas
         }
     }
 
