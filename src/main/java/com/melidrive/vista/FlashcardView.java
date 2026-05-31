@@ -21,6 +21,8 @@ public class FlashcardView extends VBox {
     private Label labelContenido;
     private Label labelProgreso;
     private Label labelIndicador;
+    private Label labelContador;
+    private Label labelArchivoAsociado;
     private Button btnFacil;
     private Button btnDificil;
     private StackPane tarjeta;
@@ -34,16 +36,24 @@ public class FlashcardView extends VBox {
         this.setStyle("-fx-background-color: #ecf0f1;");
 
         // Título
-        Label titulo = new Label("📚 Modo Estudio - Repaso Espaciado");
+        Label titulo = new Label("Modo Estudio - Repaso Espaciado");
         titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         // Progreso
         labelProgreso = new Label();
         labelProgreso.setStyle("-fx-font-size: 13px; -fx-text-fill: #7f8c8d;");
 
-        // Indicador (Pregunta / Respuesta)
+        // Indicador (Pregunta / Respuesta) y Contador
         labelIndicador = new Label("PREGUNTA");
         labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
+        
+        labelContador = new Label();
+        labelContador.setStyle("-fx-font-size: 11px; -fx-text-fill: #7f8c8d; -fx-font-weight: bold;");
+
+        Region spacerIndicador = new Region();
+        HBox.setHgrow(spacerIndicador, Priority.ALWAYS);
+        HBox infoBar = new HBox(labelIndicador, spacerIndicador, labelContador);
+        infoBar.setMaxWidth(500);
 
         // Tarjeta
         tarjeta = new StackPane();
@@ -58,7 +68,12 @@ public class FlashcardView extends VBox {
         labelContenido.setMaxWidth(450);
         labelContenido.setAlignment(Pos.CENTER);
 
-        tarjeta.getChildren().add(labelContenido);
+        labelArchivoAsociado = new Label();
+        labelArchivoAsociado.setStyle("-fx-font-size: 11px; -fx-text-fill: #95a5a6;");
+        StackPane.setAlignment(labelArchivoAsociado, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(labelArchivoAsociado, new Insets(10));
+
+        tarjeta.getChildren().addAll(labelContenido, labelArchivoAsociado);
 
         Label instruccion = new Label("(Haz clic en la tarjeta para voltearla)");
         instruccion.setStyle("-fx-font-size: 11px; -fx-text-fill: #b2bec3;");
@@ -66,12 +81,12 @@ public class FlashcardView extends VBox {
         tarjeta.setOnMouseClicked(e -> voltearTarjeta());
 
         // Botones de calificación
-        btnFacil = new Button("✅ Fácil");
+        btnFacil = new Button("Fácil");
         btnFacil.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; "
                 + "-fx-font-size: 14px; -fx-cursor: hand; -fx-pref-width: 120;");
         btnFacil.setOnAction(e -> calificar(2));
 
-        btnDificil = new Button("❌ Difícil");
+        btnDificil = new Button("Difícil");
         btnDificil.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; "
                 + "-fx-font-size: 14px; -fx-cursor: hand; -fx-pref-width: 120;");
         btnDificil.setOnAction(e -> calificar(1));
@@ -83,7 +98,7 @@ public class FlashcardView extends VBox {
         contenedorBotones.getChildren().add(filaBotones);
 
         // Botón iniciar sesión
-        Button btnIniciar = new Button("▶ Iniciar Sesión de Estudio");
+        Button btnIniciar = new Button("Iniciar Sesión de Estudio");
         btnIniciar.setStyle("-fx-background-color: #6c5ce7; -fx-text-fill: white; "
                 + "-fx-font-size: 14px; -fx-cursor: hand;");
         btnIniciar.setOnAction(e -> {
@@ -91,7 +106,7 @@ public class FlashcardView extends VBox {
             mostrarTarjetaActual();
         });
 
-        getChildren().addAll(titulo, labelProgreso, btnIniciar, labelIndicador, tarjeta, instruccion, contenedorBotones);
+        getChildren().addAll(titulo, labelProgreso, btnIniciar, infoBar, tarjeta, instruccion, contenedorBotones);
 
         // Estado inicial
         int pendientes = controller.getTarjetasPendientesHoy();
@@ -99,7 +114,7 @@ public class FlashcardView extends VBox {
                 + " | Total en el sistema: " + controller.getTotalFlashcards());
         labelContenido.setText("Presiona \"Iniciar Sesión\" para comenzar");
         contenedorBotones.setVisible(false);
-        labelIndicador.setVisible(false);
+        infoBar.setVisible(false);
     }
 
     /**
@@ -116,7 +131,17 @@ public class FlashcardView extends VBox {
         labelContenido.setText(actual.getPregunta());
         labelIndicador.setText("PREGUNTA");
         labelIndicador.setStyle("-fx-font-size: 11px; -fx-text-fill: #3498db; -fx-font-weight: bold;");
-        labelIndicador.setVisible(true);
+        
+        labelContador.setText((controller.getIndiceActual() + 1) + " / " + controller.getTotalSesion());
+        
+        if (actual.getArchivoAsociado() != null) {
+            labelArchivoAsociado.setText("Archivo: " + actual.getArchivoAsociado().getNombre());
+            labelArchivoAsociado.setVisible(true);
+        } else {
+            labelArchivoAsociado.setVisible(false);
+        }
+
+        labelIndicador.getParent().setVisible(true);
         contenedorBotones.setVisible(false);
 
         tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 12; "
@@ -160,9 +185,11 @@ public class FlashcardView extends VBox {
      * Muestra mensaje de sesión completada.
      */
     private void mostrarSesionFinalizada() {
-        labelContenido.setText("🎉 ¡Sesión completada!\nNo hay más tarjetas por repasar hoy.");
+        labelContenido.setText("¡Sesión completada!\nNo hay más tarjetas por repasar hoy.\n"
+                + "Fácil: " + controller.getRespuestasFacil() + " | Difícil: " + controller.getRespuestasDificil());
         labelContenido.setStyle("-fx-font-size: 16px; -fx-text-fill: #27ae60; -fx-wrap-text: true;");
-        labelIndicador.setVisible(false);
+        labelIndicador.getParent().setVisible(false);
+        labelArchivoAsociado.setVisible(false);
         contenedorBotones.setVisible(false);
         tarjeta.setStyle("-fx-background-color: #d5f5e3; -fx-background-radius: 12; "
                 + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 3);");
