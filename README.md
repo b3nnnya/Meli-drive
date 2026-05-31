@@ -2,73 +2,68 @@
 
 **Sistema Inteligente de Gestión y Estudio Académico**
 
-Aplicación de escritorio desarrollada en Java con JavaFX que simula un gestor de archivos estilo Google Drive orientado al ámbito académico. Incluye explorador de archivos, etiquetado manual de documentos y un módulo de estudio con tarjetas de repaso espaciado (Flashcards).
+Aplicación de escritorio desarrollada en Java con JavaFX que simula un gestor de archivos estilo Google Drive orientado al ámbito académico. Incluye explorador de archivos, importación de archivos físicos, visualización de PDFs, recortador de imágenes, etiquetado manual de documentos y un módulo de estudio con tarjetas de repaso espaciado (Flashcards visuales).
 
 ---
 
 ## 🖥️ Capturas
 
-| Explorador de Archivos | Modo Estudio (Flashcards) |
-|:-:|:-:|
-| Navegación por carpetas con íconos | Tarjetas con repaso espaciado |
+| Explorador de Archivos | Visor PDF y Recortes | Modo Estudio (Flashcards) |
+|:-:|:-:|:-:|
+| Interfaz moderna para gestionar carpetas e importar archivos físicos. | Visualización de PDF integrada con herramienta para recortar ejercicios. | Tarjetas con repaso espaciado que soportan imágenes como preguntas. |
 
 ---
 
-## ✨ Funcionalidades
+## ✨ Funcionalidades Principales
 
-- **Explorador de Archivos** — Navegación por carpetas y archivos con íconos según tipo MIME
-- **Creación de Carpetas** — Diálogo modal para crear nuevas carpetas dentro de la ubicación actual
-- **Visor de Documentos** — Visualización de detalles del archivo (nombre, tipo, tamaño)
-- **Sistema de Etiquetas** — Agregar y eliminar etiquetas manuales a cada documento
-- **Buscador** — Búsqueda recursiva de archivos por nombre en todo el árbol de carpetas
-- **Flashcards** — Módulo de estudio con repaso espaciado (Spaced Repetition)
-  - Volteo de tarjetas (pregunta ↔ respuesta)
-  - Calificación: Fácil / Difícil
-  - Algoritmo de incremento exponencial para programar repasos
+- **Explorador de Archivos (Modernizado)** — Navegación fluida por carpetas y archivos con un sistema de diseño UI moderno y animaciones.
+- **Importación de Archivos Físicos** — Permite cargar archivos PDF o imágenes reales desde tu computadora y copiarlos de forma segura a la base de datos local.
+- **Visor de Documentos Interactivo** — Renderiza páginas de archivos PDF en alta calidad (vía *Apache PDFBox*).
+- **Herramienta de Recortes (Ejercicios)** — Selecciona cualquier área de un documento (ej: un problema de física) arrastrando el ratón para capturarlo como imagen.
+- **Buscador y Sistema de Etiquetas** — Agrega etiquetas con colores personalizados y busca documentos rápidamente.
+- **Flashcards Visuales (Spaced Repetition)** — Crea tarjetas de estudio usando tus recortes de imágenes como pregunta y una solución en texto. El algoritmo programa automáticamente el siguiente repaso en función de si te resultó fácil o difícil.
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Arquitectura MVC y Patrones Aplicados
 
-El proyecto sigue el patrón **MVC (Modelo - Vista - Controlador)**:
+El proyecto sigue el patrón de arquitectura **MVC (Modelo - Vista - Controlador)**, además de patrones de diseño como **Composite** y **Facade**:
 
 ```
 src/main/java/com/melidrive/
-├── MainApp.java                    # Punto de entrada JavaFX
-├── ConsolaTest.java                # Pruebas por consola (sin GUI)
-├── modelo/                         # Capa de datos
-│   ├── DriveFile.java              # Archivo lógico
-│   ├── DriveFolder.java            # Carpeta (patrón Composite)
-│   ├── Etiqueta.java               # Etiqueta manual
-│   ├── Flashcard.java              # Tarjeta de estudio
-│   └── GestorArchivos.java         # Fachada central del modelo
-├── controlador/                    # Lógica de negocio
-│   ├── MainController.java         # Orquestador central
-│   ├── ExploradorController.java   # Navegación de archivos
-│   ├── SidebarController.java      # Menú lateral
-│   ├── VisorDocumentoController.java # Visualización de documentos
-│   └── FlashcardController.java    # Sesiones de repaso
-├── vista/                          # Interfaz gráfica (JavaFX)
-│   ├── MainView.java               # Layout principal
-│   ├── ExploradorView.java         # Vista del explorador
-│   ├── FlashcardView.java          # Vista de flashcards
-│   ├── VisorDocumentoView.java     # Vista del visor
-│   └── DialogoNuevaCarpeta.java    # Diálogo modal
-└── util/                           # Utilidades
-    └── IconosUtil.java             # Asignación de íconos por MIME
+├── Launcher.java                   # Puente de entrada (Evita config. de módulos JavaFX)
+├── MainApp.java                    # Entrypoint JavaFX
+├── modelo/                         # Capa de Datos (Lógica de Negocio Pura)
+│   ├── DriveFile.java              # Abstracción de un Archivo (Físico y Lógico)
+│   ├── DriveFolder.java            # Carpeta (Implementa patrón Composite)
+│   ├── Etiqueta.java               # Etiqueta manual de clasificación
+│   ├── Flashcard.java              # Tarjeta de estudio con algoritmo de repaso
+│   └── GestorArchivos.java         # Fachada (Facade) para manejar todo el árbol
+├── controlador/                    # Controladores (Intermediarios)
+│   ├── MainController.java         # Orquestador de navegación de vistas
+│   ├── ExploradorController.java   # Maneja eventos del explorador e importaciones
+│   ├── VisorDocumentoController.java # Controla el renderizado y recortes de PDFs
+│   └── FlashcardController.java    # Controla la lógica de la sesión de estudio
+└── vista/                          # Capa de Presentación (GUIs JavaFX)
+    ├── MainView.java               # Layout envolvente y buscador
+    ├── ExploradorView.java         # Interfaz de grillas y navegación
+    ├── FlashcardView.java          # Interfaz interactiva de tarjetas
+    ├── VisorDocumentoView.java     # Canvas y visor de imágenes/PDF
+    └── DialogoNuevoEjercicio.java  # Diálogo de creación con previsualización
 ```
 
 ---
 
-## 🛠️ Tecnologías
+## 🛠️ Stack Tecnológico
 
-| Tecnología | Versión | Uso |
+| Tecnología | Versión | Propósito |
 |---|---|---|
-| Java | 17 | Lenguaje principal |
-| JavaFX | 17.0.6 | Interfaz gráfica |
-| Maven | 3.x | Gestión de dependencias y build |
-| Tess4j | 5.13.0 | OCR (extracción de texto de imágenes) |
-| JUnit 5 | 5.10.0 | Testing |
+| **Java** | 17 | Lenguaje base orientado a objetos |
+| **JavaFX** | 17.0.6 | Motor de la interfaz gráfica y estilos CSS |
+| **Apache PDFBox** | 2.0.29 | Renderizado nativo de PDFs a imágenes |
+| **JavaFX Swing** | 17.0.6 | Puente para procesar BufferedImage a vistas FX |
+| **Maven** | 3.x | Orquestador de dependencias y construcción |
+| **JUnit 5** | 5.10.0 | Pruebas unitarias de modelos de negocio |
 
 ---
 
@@ -76,54 +71,32 @@ src/main/java/com/melidrive/
 
 ### Requisitos previos
 - **JDK 17** o superior
-- **Maven 3.x**
+- **Maven 3.x** instalado en el PATH
 
-### Clonar el repositorio
+### 1. Clonar el repositorio
 ```bash
 git clone https://github.com/b3nnnya/Meli-drive.git
 cd Meli-drive
 ```
 
-### Compilar y ejecutar
+### 2. Ejecutar la aplicación (Sin configurar módulos)
+Gracias al `Launcher.java`, puedes ejecutar el proyecto directamente desde tu IDE (Run) o mediante Maven:
 ```bash
-mvn javafx:run
-```
-
-### Ejecutar pruebas por consola (sin interfaz)
-```bash
-mvn compile exec:java -Dexec.mainClass="com.melidrive.ConsolaTest"
+mvn clean compile javafx:run
 ```
 
 ---
 
-## 📂 Recursos
+## 📂 Gestión de Datos Locales
 
-Los íconos de tipos de archivo se encuentran en:
-```
-src/main/resources/icons/
-```
-
-| Ícono | Archivo |
-|---|---|
-| 📁 Carpeta | `folder.png` |
-| 📄 PDF | `pdf.png` |
-| 🖼️ Imagen | `image.png` |
-| 📝 Documento | `document.png` |
-| 📊 Hoja de cálculo | `spreadsheet.png` |
-| 📽️ Presentación | `presentation.png` |
-| 🎬 Video | `video.png` |
-| 🎵 Audio | `audio.png` |
-| 📃 Texto | `text.png` |
-| 📎 Genérico | `generic.png` |
+El sistema almacena el contenido en el directorio del proyecto automáticamente:
+- `Meli-Drive/data/archivos/`: Copias de los PDFs e Imágenes importadas.
+- `Meli-Drive/data/recortes/`: Las capturas de ejercicios creadas con el visor.
 
 ---
 
 ## 👥 Autores
-
-Proyecto universitario desarrollado por el equipo Meli-Drive.
-
----
+Proyecto universitario desarrollado para la aplicación de POO y UML.
 
 ## 📄 Licencia
-
-Este proyecto es de uso académico.
+Uso exclusivamente académico.
