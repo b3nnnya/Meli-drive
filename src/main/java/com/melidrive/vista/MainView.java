@@ -27,6 +27,12 @@ public class MainView extends BorderPane {
     public MainView(MainController mainController) {
         this.mainController = mainController;
 
+        try {
+            this.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar main.css en MainView");
+        }
+
         // === BARRA SUPERIOR ===
         TextField buscador = new TextField();
         buscador.setPromptText("Buscar en tus archivos...");
