@@ -19,6 +19,21 @@ public class DriveFolderTest {
     }
 
     @Test
+    void eliminarArchivoDebeRemoverArchivo() {
+
+        DriveFolder carpeta =
+                new DriveFolder("1","Documentos");
+
+        DriveFile archivo =
+                new DriveFile("1","a.pdf","pdf",10);
+
+        carpeta.agregarArchivo(archivo);
+        carpeta.eliminarArchivo(archivo);
+
+        assertTrue(carpeta.getArchivos().isEmpty());
+    }
+
+    @Test
     public void testContarArchivosRecursivo() {
         DriveFolder raiz = new DriveFolder("f-0", "Raiz");
         DriveFolder sub1 = new DriveFolder("f-1", "Sub1");
@@ -49,5 +64,21 @@ public class DriveFolderTest {
         
         DriveFolder noEncontrada = raiz.buscarSubcarpetaPorNombre("Inexistente");
         assertNull(noEncontrada);
+    }
+
+    @Test
+    void eliminarSubcarpetaDebeRemoverla() {
+
+        DriveFolder padre =
+                new DriveFolder("1","Padre");
+
+        DriveFolder hija =
+                new DriveFolder("2","Hija");
+
+        padre.agregarSubcarpeta(hija);
+        padre.eliminarSubcarpeta(hija);
+
+        assertTrue(
+                padre.getSubcarpetas().isEmpty());
     }
 }
