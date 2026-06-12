@@ -27,6 +27,26 @@ public class GestorArchivosTest {
     }
 
     @Test
+    void registrarArchivoDebeGenerarIdsUnicos() {
+
+        GestorArchivos gestor =
+                new GestorArchivos();
+
+        DriveFolder raiz =
+                gestor.getCarpetaRaiz();
+
+        DriveFile a =
+                gestor.registrarArchivo(
+                        "a","pdf",1,raiz);
+
+        DriveFile b =
+                gestor.registrarArchivo(
+                        "b","pdf",1,raiz);
+
+        assertNotEquals(a.getId(), b.getId());
+    }
+
+    @Test
     public void testBusquedaPorEtiqueta() {
         DriveFolder carpeta = gestor.crearCarpeta("Docs", gestor.getCarpetaRaiz());
         DriveFile archivo = gestor.registrarArchivo("Nota.txt", "text/plain", 100, carpeta);
@@ -39,6 +59,62 @@ public class GestorArchivosTest {
         
         List<DriveFile> sinResultados = gestor.buscarArchivosPorEtiqueta("Inexistente");
         assertTrue(sinResultados.isEmpty());
+    }
+
+    @Test
+    void buscarDebeIgnorarMayusculas() {
+
+        GestorArchivos gestor =
+                new GestorArchivos();
+
+        gestor.registrarArchivo(
+                "ParcialJava.pdf",
+                "pdf",
+                10,
+                gestor.getCarpetaRaiz());
+
+        List<DriveFile> resultado =
+                gestor.buscarArchivosPorNombre("JAVA");
+
+        assertEquals(1,
+                resultado.size());
+    }
+
+    @Test
+    void buscarDebeRetornarVacioSiNoExiste() {
+
+        GestorArchivos gestor =
+                new GestorArchivos();
+
+        List<DriveFile> resultado =
+                gestor.buscarArchivosPorNombre("xyz");
+
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    void buscarDebeRetornarMultiplesCoincidencias() {
+
+        GestorArchivos gestor =
+                new GestorArchivos();
+
+        DriveFolder raiz =
+                gestor.getCarpetaRaiz();
+
+        gestor.registrarArchivo(
+                "POO1.pdf","pdf",1,raiz);
+
+        gestor.registrarArchivo(
+                "POO2.pdf","pdf",1,raiz);
+
+        gestor.registrarArchivo(
+                "Java.pdf","pdf",1,raiz);
+
+        List<DriveFile> resultado =
+                gestor.buscarArchivosPorNombre("poo");
+
+        assertEquals(2,
+                resultado.size());
     }
 
     @Test
