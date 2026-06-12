@@ -24,4 +24,78 @@ public class FlashcardTest {
         assertEquals(1, flashcard.getNivelEstudio());
         assertTrue(flashcard.getProximaFechaRepaso().isAfter(LocalDate.now()));
     }
+
+    @Test
+    void registrarRepasoDificilNoDebeBajarDeCero() {
+
+        DriveFile archivo =
+                new DriveFile("1","doc","pdf",100);
+
+        Flashcard flashcard =
+                new Flashcard(
+                        "1",
+                        archivo,
+                        "P",
+                        "R");
+
+        flashcard.registrarRepaso(1);
+
+        assertEquals(
+                0,
+                flashcard.getNivelEstudio());
+
+        assertEquals(
+                LocalDate.now().plusDays(1),
+                flashcard.getProximaFechaRepaso());
+    }
+
+    @Test
+    void registrarRepasoFacilDebeSubirNivel() {
+
+        DriveFile archivo =
+                new DriveFile("1","doc","pdf",100);
+
+        Flashcard flashcard =
+                new Flashcard(
+                        "1",
+                        archivo,
+                        "P",
+                        "R");
+
+        flashcard.registrarRepaso(2);
+
+        assertEquals(
+                1,
+                flashcard.getNivelEstudio());
+
+        assertEquals(
+                LocalDate.now().plusDays(2),
+                flashcard.getProximaFechaRepaso());
+    }
+
+    @Test
+    void crecimientoDebeSerExponencial() {
+
+        DriveFile archivo =
+                new DriveFile("1","doc","pdf",100);
+
+        Flashcard flashcard =
+                new Flashcard(
+                        "1",
+                        archivo,
+                        "P",
+                        "R");
+
+        flashcard.registrarRepaso(2);
+        flashcard.registrarRepaso(2);
+        flashcard.registrarRepaso(2);
+
+        assertEquals(
+                3,
+                flashcard.getNivelEstudio());
+
+        assertEquals(
+                LocalDate.now().plusDays(8),
+                flashcard.getProximaFechaRepaso());
+    }
 }
