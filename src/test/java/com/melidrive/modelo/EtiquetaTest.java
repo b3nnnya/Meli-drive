@@ -26,4 +26,14 @@ public class EtiquetaTest {
         assertEquals(tag1.hashCode(), tag2.hashCode());
         assertNotEquals(tag1.hashCode(), tag3.hashCode());
     }
+
+    @Test
+    void toStringDebeRetornarNombre() {
+
+        Etiqueta etiqueta =
+                new Etiqueta("1","Parcial","#000");
+
+        assertEquals("Parcial",
+                etiqueta.toString());
+    }
 }
