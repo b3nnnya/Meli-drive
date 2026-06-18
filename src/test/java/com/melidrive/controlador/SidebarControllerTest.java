@@ -1,4 +1,4 @@
-package controlador;
+package com.melidrive.controlador;
 
 public class SidebarControllerTest {
 }
