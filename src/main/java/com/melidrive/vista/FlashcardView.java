@@ -2,10 +2,10 @@ package com.melidrive.vista;
 
 import com.melidrive.controlador.FlashcardController;
 import com.melidrive.modelo.Flashcard;
+import com.melidrive.util.Notificador;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 /**
@@ -28,6 +28,8 @@ public class FlashcardView extends VBox {
     private Button btnDificil;
     private StackPane tarjeta;
     private VBox contenedorBotones;
+    private Button btnEliminarRepaso;
+    private ProgressBar barraProgreso;
 
     public FlashcardView(FlashcardController controller) {
         this.controller = controller;
@@ -55,6 +57,12 @@ public class FlashcardView extends VBox {
         HBox.setHgrow(spacerIndicador, Priority.ALWAYS);
         HBox infoBar = new HBox(labelIndicador, spacerIndicador, labelContador);
         infoBar.setMaxWidth(500);
+
+        // Barra de progreso de la sesión (porcentaje de tarjetas ya repasadas)
+        barraProgreso = new ProgressBar(0);
+        barraProgreso.getStyleClass().add("progress-estudio");
+        barraProgreso.setPrefWidth(500);
+        barraProgreso.setMaxWidth(500);
 
         // Tarjeta
         tarjeta = new StackPane();
@@ -117,7 +125,12 @@ public class FlashcardView extends VBox {
             mostrarTarjetaActual();
         });
 
-        getChildren().addAll(titulo, labelProgreso, btnIniciar, infoBar, tarjeta, instruccion, contenedorBotones);
+        // Botón para eliminar el repaso (flashcard) que se está mostrando
+        btnEliminarRepaso = new Button("Eliminar este repaso");
+        btnEliminarRepaso.getStyleClass().addAll("modern-button-secondary", "btn-danger-text");
+        btnEliminarRepaso.setOnAction(e -> confirmarEliminarRepaso());
+
+        getChildren().addAll(titulo, labelProgreso, btnIniciar, infoBar, barraProgreso, tarjeta, instruccion, contenedorBotones, btnEliminarRepaso);
 
         // Estado inicial
         int pendientes = controller.getTarjetasPendientesHoy();
@@ -126,6 +139,10 @@ public class FlashcardView extends VBox {
         labelContenido.setText("Presiona \"Iniciar Sesión\" para comenzar");
         contenedorBotones.setVisible(false);
         infoBar.setVisible(false);
+        barraProgreso.setVisible(false);
+        barraProgreso.setManaged(false);
+        btnEliminarRepaso.setVisible(false);
+        btnEliminarRepaso.setManaged(false);
     }
 
     /**
@@ -165,6 +182,33 @@ public class FlashcardView extends VBox {
 
         labelIndicador.getParent().setVisible(true);
         contenedorBotones.setVisible(false);
+        btnEliminarRepaso.setVisible(true);
+        btnEliminarRepaso.setManaged(true);
+
+        // Progreso = tarjetas ya repasadas / total de la sesión
+        int total = controller.getTotalSesion();
+        barraProgreso.setProgress(total > 0 ? (double) controller.getIndiceActual() / total : 0);
+        barraProgreso.setVisible(true);
+        barraProgreso.setManaged(true);
+    }
+
+    /**
+     * Voltea la tarjeta desde un atajo de teclado (Espacio), si hay tarjeta activa.
+     */
+    public void voltearDesdeTeclado() {
+        if (controller.getFlashcardActual() != null) {
+            voltearTarjeta();
+        }
+    }
+
+    /**
+     * Califica desde un atajo de teclado (← difícil, → fácil), pero solo cuando
+     * se está mostrando la respuesta (los botones de calificación están visibles).
+     */
+    public void calificarDesdeTeclado(int calificacion) {
+        if (contenedorBotones.isVisible() && controller.getFlashcardActual() != null) {
+            calificar(calificacion);
+        }
     }
 
     /**
@@ -213,5 +257,30 @@ public class FlashcardView extends VBox {
         contenedorBotones.setVisible(false);
         imageViewAsociada.setVisible(false);
         imageViewAsociada.setManaged(false);
+        barraProgreso.setVisible(false);
+        barraProgreso.setManaged(false);
+        btnEliminarRepaso.setVisible(false);
+        btnEliminarRepaso.setManaged(false);
+    }
+
+    /**
+     * Pide confirmación y elimina el repaso (flashcard) que se está mostrando.
+     */
+    private void confirmarEliminarRepaso() {
+        Flashcard actual = controller.getFlashcardActual();
+        if (actual == null) return;
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Eliminar repaso");
+        confirm.setHeaderText("¿Eliminar este repaso de ejercicio?");
+        confirm.setContentText("Pregunta: " + actual.getPregunta());
+        confirm.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
+
+        java.util.Optional<ButtonType> respuesta = confirm.showAndWait();
+        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
+            controller.eliminarFlashcardActual();
+            Notificador.mostrar(this, "Repaso eliminado", Notificador.Tipo.DANGER);
+            mostrarTarjetaActual();
+        }
     }
 }
