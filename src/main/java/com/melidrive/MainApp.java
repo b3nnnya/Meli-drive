@@ -2,8 +2,10 @@ package com.melidrive;
 
 import com.melidrive.controlador.MainController;
 import com.melidrive.vista.MainView;
+import com.melidrive.vista.BienvenidaView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -20,7 +22,11 @@ public class MainApp extends Application {
         MainView mainView = new MainView(mainController);
         mainController.setMainView(mainView);
 
-        Scene scene = new Scene(mainView, 960, 640);
+        // La escena arranca con un contenedor temporal; mostramos primero la
+        // pantalla de bienvenida y solo al elegir una opción asociamos la app
+        // principal (así sus atajos de teclado se registran una única vez).
+        StackPane raizTemporal = new StackPane();
+        Scene scene = new Scene(raizTemporal, 960, 640);
         
         com.melidrive.util.ThemeManager themeManager = new com.melidrive.util.ThemeManager();
         themeManager.setScene(scene);
@@ -28,7 +34,11 @@ public class MainApp extends Application {
         
         mainController.setThemeManager(themeManager);
 
-        primaryStage.setTitle("Meli-Drive - Gestión Académica");
+        // Pantalla de bienvenida (launcher): cualquier opción entra a la app principal.
+        BienvenidaView bienvenida = new BienvenidaView(() -> scene.setRoot(mainView));
+        scene.setRoot(bienvenida);
+
+        primaryStage.setTitle("SIGEA - Gestión Académica");
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setScene(scene);
