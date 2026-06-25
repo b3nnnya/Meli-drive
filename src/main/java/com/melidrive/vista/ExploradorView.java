@@ -41,14 +41,18 @@ public class ExploradorView extends VBox {
         toolbar.setAlignment(Pos.CENTER_LEFT);
         toolbar.getStyleClass().add("toolbar");
 
-        Button btnVolver = new Button("⬅  Atrás");
+        Button btnVolver = new Button("Atrás");
+        btnVolver.setGraphic(IconosUtil.crearIcono("icons/ui/tb-atras.png", 16));
+        btnVolver.setGraphicTextGap(7);
         btnVolver.getStyleClass().add("modern-button-secondary");
         btnVolver.setOnAction(e -> {
             controller.volverAtras();
             refrescar();
         });
 
-        Button btnNuevaCarpeta = new Button("➕  Nueva Carpeta");
+        Button btnNuevaCarpeta = new Button("Nueva Carpeta");
+        btnNuevaCarpeta.setGraphic(IconosUtil.crearIcono("icons/ui/tb-nueva.png", 16));
+        btnNuevaCarpeta.setGraphicTextGap(7);
         btnNuevaCarpeta.getStyleClass().add("modern-button-primary");
         btnNuevaCarpeta.setOnAction(e -> {
             DialogoNuevaCarpeta dialogo = new DialogoNuevaCarpeta();
@@ -60,7 +64,9 @@ public class ExploradorView extends VBox {
             }
         });
 
-        Button btnImportar = new Button("📥  Importar Archivo");
+        Button btnImportar = new Button("Importar Archivo");
+        btnImportar.setGraphic(IconosUtil.crearIcono("icons/ui/tb-importar.png", 16));
+        btnImportar.setGraphicTextGap(7);
         btnImportar.getStyleClass().add("btn-success");
         btnImportar.setOnAction(e -> {
             javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
@@ -73,11 +79,15 @@ public class ExploradorView extends VBox {
             }
         });
 
-        Button btnVista = new Button("☰  Lista");
+        Button btnVista = new Button("Lista");
+        btnVista.setGraphic(IconosUtil.crearIcono("icons/ui/tb-lista.png", 16));
+        btnVista.setGraphicTextGap(7);
         btnVista.getStyleClass().add("modern-button-secondary");
         btnVista.setOnAction(e -> {
             vistaLista = !vistaLista;
-            btnVista.setText(vistaLista ? "▦  Cuadrícula" : "☰  Lista");
+            btnVista.setText(vistaLista ? "Cuadrícula" : "Lista");
+            btnVista.setGraphic(IconosUtil.crearIcono(
+                    vistaLista ? "icons/ui/tb-cuadricula.png" : "icons/ui/tb-lista.png", 16));
             refrescar();
         });
 
@@ -134,8 +144,7 @@ public class ExploradorView extends VBox {
             VBox estadoVacio = new VBox();
             estadoVacio.getStyleClass().add("empty-state");
 
-            Label icono = new Label("📂");
-            icono.getStyleClass().add("empty-state-icon");
+            ImageView icono = IconosUtil.crearIcono("icons/ui/empty.png", 56);
 
             Label titulo = new Label("Esta carpeta está vacía");
             titulo.getStyleClass().add("empty-state-title");

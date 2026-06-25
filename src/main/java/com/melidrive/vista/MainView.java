@@ -5,6 +5,7 @@ import com.melidrive.controlador.ExploradorController;
 import com.melidrive.controlador.MainController;
 import com.melidrive.controlador.VisorDocumentoController;
 import com.melidrive.modelo.DriveFile;
+import com.melidrive.util.IconosUtil;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -56,7 +57,9 @@ public class MainView extends BorderPane {
             }
         });
 
-        btnModoOscuro = new Button("🌙  Modo Oscuro");
+        btnModoOscuro = new Button("Modo Oscuro");
+        btnModoOscuro.setGraphic(IconosUtil.crearIcono("icons/ui/tema.png", 16));
+        btnModoOscuro.setGraphicTextGap(8);
         btnModoOscuro.getStyleClass().add("modern-button-secondary");
         btnModoOscuro.setOnAction(e -> {
             mainController.toggleModoOscuro();
@@ -80,14 +83,22 @@ public class MainView extends BorderPane {
         sidebar.setPrefWidth(220);
         sidebar.getStyleClass().add("sidebar");
 
-        Label tituloSidebar = new Label("Meli-Drive");
+        Label tituloSidebar = new Label("SIGEA");
         tituloSidebar.getStyleClass().add("sidebar-title");
 
         Separator separador = new Separator();
 
-        btnExplorador = new Button("📁  Mi Unidad");
-        btnBuscarEtiqueta = new Button("🏷  Buscar por Etiqueta");
-        btnFlashcards = new Button("📚  Modo Estudio");
+        btnExplorador = new Button("Mi Unidad");
+        btnExplorador.setGraphic(IconosUtil.crearIcono("icons/ui/nav-unidad.png", 18));
+        btnExplorador.setGraphicTextGap(10);
+
+        btnBuscarEtiqueta = new Button("Buscar por Etiqueta");
+        btnBuscarEtiqueta.setGraphic(IconosUtil.crearIcono("icons/ui/nav-etiqueta.png", 18));
+        btnBuscarEtiqueta.setGraphicTextGap(10);
+
+        btnFlashcards = new Button("Modo Estudio");
+        btnFlashcards.setGraphic(IconosUtil.crearIcono("icons/ui/nav-estudio.png", 18));
+        btnFlashcards.setGraphicTextGap(10);
 
         actualizarEstiloBotonesSidebar(btnExplorador);
 
@@ -192,7 +203,7 @@ public class MainView extends BorderPane {
     public void actualizarBotonTema() {
         boolean oscuro = mainController.getThemeManager() != null
                 && mainController.getThemeManager().isModoOscuro();
-        btnModoOscuro.setText(oscuro ? "☀  Modo Claro" : "🌙  Modo Oscuro");
+        btnModoOscuro.setText(oscuro ? "Modo Claro" : "Modo Oscuro");
     }
 
     private void actualizarEstiloBotonesSidebar(Button activo) {
