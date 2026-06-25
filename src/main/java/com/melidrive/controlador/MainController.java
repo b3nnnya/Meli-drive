@@ -2,7 +2,9 @@ package com.melidrive.controlador;
 
 import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.DriveFolder;
+import com.melidrive.modelo.EstadoAplicacion;
 import com.melidrive.modelo.GestorArchivos;
+import com.melidrive.util.RepositorioDatos;
 import com.melidrive.util.ThemeManager;
 import com.melidrive.vista.MainView;
 
@@ -16,6 +18,7 @@ public class MainController {
     private GestorArchivos gestorArchivos;
     private MainView mainView;
     private ThemeManager themeManager;
+    private boolean modoOscuroGuardado;
 
     private ExploradorController exploradorController;
     private FlashcardController flashcardController;
@@ -23,16 +26,30 @@ public class MainController {
     private SidebarController sidebarController;
 
     public MainController() {
-        this.gestorArchivos = new GestorArchivos();
+        // Intentar restaurar el estado guardado en disco (árbol de carpetas + flashcards).
+        EstadoAplicacion estadoGuardado = RepositorioDatos.cargar();
+        this.modoOscuroGuardado = (estadoGuardado != null) && estadoGuardado.isModoOscuro();
+
+        if (estadoGuardado != null && estadoGuardado.getCarpetaRaiz() != null) {
+            this.gestorArchivos = new GestorArchivos(estadoGuardado.getCarpetaRaiz());
+        } else {
+            this.gestorArchivos = new GestorArchivos();
+        }
 
         this.exploradorController = new ExploradorController(this);
         this.flashcardController = new FlashcardController(this);
         this.visorDocumentoController = new VisorDocumentoController(this);
         this.sidebarController = new SidebarController(this);
 
-        cargarDatosDeEjemplo();
-
-        System.out.println("MainController inicializado. Modelo de datos cargado.");
+        if (estadoGuardado != null) {
+            // Restaurar las flashcards preservando su vínculo con los archivos del árbol.
+            flashcardController.cargarFlashcards(estadoGuardado.getFlashcards());
+            System.out.println("MainController inicializado. Estado restaurado desde disco.");
+        } else {
+            // Primera ejecución: cargar datos de ejemplo.
+            cargarDatosDeEjemplo();
+            System.out.println("MainController inicializado. Datos de ejemplo cargados.");
+        }
     }
 
     /**
@@ -41,6 +58,14 @@ public class MainController {
      */
     public void setThemeManager(ThemeManager themeManager) {
         this.themeManager = themeManager;
+        // Restaurar la preferencia de tema guardada (modo oscuro persistente).
+        if (modoOscuroGuardado) {
+            themeManager.toggleModoOscuro();
+        }
+        // Reflejar el estado del tema en el botón de la barra superior.
+        if (mainView != null) {
+            mainView.actualizarBotonTema();
+        }
     }
     
     public ThemeManager getThemeManager() {
@@ -146,5 +171,20 @@ public class MainController {
         if (mainView != null) {
             mainView.mostrarBusquedaPorEtiqueta(this);
         }
+    }
+
+    /**
+     * Guarda en disco el estado completo de la aplicación
+     * (árbol de carpetas/archivos y flashcards).
+     * Se invoca al cerrar la aplicación desde MainApp.stop().
+     */
+    public void guardarEstado() {
+        boolean modoOscuro = (themeManager != null) && themeManager.isModoOscuro();
+        EstadoAplicacion estado = new EstadoAplicacion(
+                gestorArchivos.getCarpetaRaiz(),
+                flashcardController.getTodasLasFlashcards(),
+                modoOscuro
+        );
+        RepositorioDatos.guardar(estado);
     }
 }

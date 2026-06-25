@@ -5,7 +5,10 @@ import com.melidrive.modelo.DriveFolder;
 import com.melidrive.modelo.GestorArchivos;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.List;
 
 /**
  * Controlador encargado de la navegación y gestión de archivos.
@@ -38,6 +41,31 @@ public class ExploradorController {
      */
     public DriveFolder getCarpetaActual() {
         return carpetaActual;
+    }
+
+    /**
+     * Devuelve la ruta de navegación desde la raíz hasta la carpeta actual.
+     * Se reconstruye a partir de la pila de historial: su tope es el padre
+     * directo, por lo que al invertirla y añadir la carpeta actual se obtiene
+     * la ruta en orden (raíz → ... → actual). La usa el breadcrumb de la vista.
+     */
+    public List<DriveFolder> getRutaActual() {
+        List<DriveFolder> ruta = new ArrayList<>(historial);
+        Collections.reverse(ruta);
+        ruta.add(carpetaActual);
+        return ruta;
+    }
+
+    /**
+     * Navega directamente a una carpeta de la ruta actual (un ancestro o la
+     * carpeta actual), retrocediendo en el historial hasta alcanzarla.
+     * Pensado para los clics en el breadcrumb.
+     */
+    public void irARuta(DriveFolder destino) {
+        if (destino == null) return;
+        while (carpetaActual != destino && !historial.isEmpty()) {
+            carpetaActual = historial.pop();
+        }
     }
 
     /**
@@ -92,5 +120,30 @@ public class ExploradorController {
                 System.out.println("No se pudo importar el archivo.");
             }
         }
+    }
+
+    /**
+     * Elimina una subcarpeta de la carpeta actual.
+     * @return true si se eliminó correctamente.
+     */
+    public boolean eliminarCarpeta(DriveFolder carpeta) {
+        if (carpeta != null && carpetaActual.getSubcarpetas().contains(carpeta)) {
+            carpetaActual.eliminarSubcarpeta(carpeta);
+            System.out.println("Carpeta eliminada: " + carpeta.getNombre());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Elimina un archivo de la carpeta actual.
+     * Quita la referencia lógica del árbol; no borra el archivo físico del disco.
+     * @return true si se eliminó correctamente.
+     */
+    public boolean eliminarArchivo(DriveFile archivo) {
+        if (archivo != null && carpetaActual.getArchivos().contains(archivo)) {
+            return gestorArchivos.eliminarArchivo(archivo, carpetaActual);
+        }
+        return false;
     }
 }

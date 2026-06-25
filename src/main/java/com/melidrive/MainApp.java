@@ -12,9 +12,11 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
+    private MainController mainController;
+
     @Override
     public void start(Stage primaryStage) {
-        MainController mainController = new MainController();
+        mainController = new MainController();
         MainView mainView = new MainView(mainController);
         mainController.setMainView(mainView);
 
@@ -31,6 +33,14 @@ public class MainApp extends Application {
         primaryStage.setMinHeight(600);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() {
+        // Al cerrar la aplicación, persistir el estado completo en disco.
+        if (mainController != null) {
+            mainController.guardarEstado();
+        }
     }
 
     public static void main(String[] args) {

@@ -1,7 +1,9 @@
 package com.melidrive.modelo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,14 @@ public class GestorArchivos {
     public GestorArchivos() {
         // Al instanciar el gestor, se crea automáticamente la carpeta principal
         this.carpetaRaiz = new DriveFolder("root", "Mi Unidad");
+    }
+
+    /**
+     * Constructor que reutiliza una carpeta raíz ya existente.
+     * Se usa al restaurar el árbol de carpetas desde disco (persistencia).
+     */
+    public GestorArchivos(DriveFolder carpetaRaiz) {
+        this.carpetaRaiz = (carpetaRaiz != null) ? carpetaRaiz : new DriveFolder("root", "Mi Unidad");
     }
 
     /**
@@ -172,5 +182,53 @@ public class GestorArchivos {
 
     public DriveFolder getCarpetaRaiz() {
         return carpetaRaiz;
+    }
+
+    /**
+     * Recolecta todas las etiquetas existentes (sin repetir por nombre)
+     * recorriendo recursivamente todo el árbol de carpetas.
+     */
+    public List<Etiqueta> obtenerTodasLasEtiquetas() {
+        List<Etiqueta> resultado = new ArrayList<>();
+        Set<String> nombresVistos = new HashSet<>();
+        recolectarEtiquetas(carpetaRaiz, resultado, nombresVistos);
+        return resultado;
+    }
+
+    private void recolectarEtiquetas(DriveFolder carpeta, List<Etiqueta> acumulador, Set<String> nombresVistos) {
+        for (DriveFile archivo : carpeta.getArchivos()) {
+            if (archivo.getEtiquetas() != null) {
+                for (Etiqueta etiqueta : archivo.getEtiquetas()) {
+                    if (nombresVistos.add(etiqueta.getNombre().toLowerCase())) {
+                        acumulador.add(etiqueta);
+                    }
+                }
+            }
+        }
+        for (DriveFolder sub : carpeta.getSubcarpetas()) {
+            recolectarEtiquetas(sub, acumulador, nombresVistos);
+        }
+    }
+
+    /**
+     * Elimina del árbol todo el contenido que no existe en realidad:
+     * archivos sin respaldo físico (rutaFisica nula o inexistente) y las
+     * carpetas que, tras quitar esos archivos, queden completamente vacías.
+     * Conserva los archivos que sí apuntan a un archivo real en disco.
+     */
+    public void purgarContenidoNoReal() {
+        purgarRecursivo(carpetaRaiz);
+    }
+
+    private void purgarRecursivo(DriveFolder carpeta) {
+        carpeta.getArchivos().removeIf(archivo ->
+                archivo.getRutaFisica() == null || !new File(archivo.getRutaFisica()).exists());
+
+        for (DriveFolder sub : carpeta.getSubcarpetas()) {
+            purgarRecursivo(sub);
+        }
+
+        carpeta.getSubcarpetas().removeIf(sub ->
+                sub.getArchivos().isEmpty() && sub.getSubcarpetas().isEmpty());
     }
 }

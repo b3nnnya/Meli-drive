@@ -36,6 +36,17 @@ public class FlashcardController {
     }
 
     /**
+     * Reemplaza la lista de flashcards con las restauradas desde disco (persistencia).
+     */
+    public void cargarFlashcards(List<Flashcard> flashcards) {
+        this.todasLasFlashcards = new ArrayList<>();
+        if (flashcards != null) {
+            this.todasLasFlashcards.addAll(flashcards);
+        }
+        System.out.println("Flashcards restauradas desde disco: " + this.todasLasFlashcards.size());
+    }
+
+    /**
      * Crea una nueva flashcard asociada a un archivo y la registra en el sistema.
      */
     public Flashcard crearFlashcard(String id, DriveFile archivo, String pregunta, String respuesta) {
@@ -51,6 +62,31 @@ public class FlashcardController {
     public void eliminarFlashcard(Flashcard flashcard) {
         todasLasFlashcards.remove(flashcard);
         System.out.println("Flashcard eliminada: " + flashcard.getPregunta());
+    }
+
+    /**
+     * Elimina la flashcard que se está mostrando en la sesión actual.
+     * La siguiente tarjeta pasa a ocupar la posición actual (no se avanza el índice).
+     */
+    public void eliminarFlashcardActual() {
+        Flashcard actual = getFlashcardActual();
+        if (actual != null) {
+            todasLasFlashcards.remove(actual);
+            sesionActual.remove(actual);
+            System.out.println("Repaso eliminado: " + actual.getPregunta());
+        }
+    }
+
+    /**
+     * Elimina las flashcards que no existen en realidad: las asociadas a un
+     * archivo sin respaldo físico (rutaFisica nula o inexistente), como las de ejemplo.
+     */
+    public void purgarFlashcardsNoReales() {
+        todasLasFlashcards.removeIf(f ->
+                f.getArchivoAsociado() == null
+                || f.getArchivoAsociado().getRutaFisica() == null
+                || !new java.io.File(f.getArchivoAsociado().getRutaFisica()).exists());
+        System.out.println("Flashcards no reales eliminadas. Restantes: " + todasLasFlashcards.size());
     }
 
     /**
