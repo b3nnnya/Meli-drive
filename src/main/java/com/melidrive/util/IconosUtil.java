@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.InputStream;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Clase utilitaria para asignar íconos visuales según el tipo de contenido.
@@ -74,7 +76,36 @@ public final class IconosUtil {
     }
 
     /**
-     * Determina el ícono correspondiente según el tipo MIME de un archivo.
+     * Regla que asocia una condición sobre el tipo MIME con su ícono.
+     * (Principio Abierto/Cerrado): para soportar un tipo nuevo basta con
+     * añadir una entrada a {@link #REGLAS_MIME}, sin modificar la lógica de
+     * {@link #getIconoPorMime}.
+     */
+    private record ReglaIcono(Predicate<String> aplica, TipoIcono tipo) { }
+
+    /**
+     * Reglas de asignación de íconos por MIME, evaluadas en orden (la primera
+     * que coincide gana). El orden importa: lo específico antes que lo genérico.
+     */
+    private static final List<ReglaIcono> REGLAS_MIME = List.of(
+            new ReglaIcono(m -> m.equals("application/pdf"), TipoIcono.PDF),
+            new ReglaIcono(m -> m.startsWith("image/"), TipoIcono.IMAGEN),
+            new ReglaIcono(m -> m.startsWith("video/"), TipoIcono.VIDEO),
+            new ReglaIcono(m -> m.startsWith("audio/"), TipoIcono.AUDIO),
+            new ReglaIcono(m -> m.startsWith("text/"), TipoIcono.TEXTO),
+            new ReglaIcono(m -> m.contains("document") || m.contains("msword")
+                    || m.contains("wordprocessingml"), TipoIcono.DOCUMENTO),
+            new ReglaIcono(m -> m.contains("spreadsheet") || m.contains("excel")
+                    || m.contains("spreadsheetml"), TipoIcono.HOJA_CALCULO),
+            new ReglaIcono(m -> m.contains("presentation") || m.contains("powerpoint")
+                    || m.contains("presentationml"), TipoIcono.PRESENTACION),
+            new ReglaIcono(m -> m.contains("zip") || m.contains("rar")
+                    || m.contains("tar") || m.contains("7z"), TipoIcono.COMPRIMIDO)
+    );
+
+    /**
+     * Determina el ícono correspondiente según el tipo MIME de un archivo,
+     * evaluando las {@link #REGLAS_MIME} en orden.
      * @param tipoMime el tipo MIME del archivo (ej. "application/pdf", "image/png")
      * @return el TipoIcono que corresponde al MIME proporcionado
      */
@@ -82,58 +113,11 @@ public final class IconosUtil {
         if (tipoMime == null || tipoMime.isEmpty()) {
             return TipoIcono.ARCHIVO_GENERICO;
         }
-
         String mime = tipoMime.toLowerCase();
-
-        // PDF
-        if (mime.equals("application/pdf")) {
-            return TipoIcono.PDF;
-        }
-
-        // Imágenes
-        if (mime.startsWith("image/")) {
-            return TipoIcono.IMAGEN;
-        }
-
-        // Video
-        if (mime.startsWith("video/")) {
-            return TipoIcono.VIDEO;
-        }
-
-        // Audio
-        if (mime.startsWith("audio/")) {
-            return TipoIcono.AUDIO;
-        }
-
-        // Texto plano
-        if (mime.startsWith("text/")) {
-            return TipoIcono.TEXTO;
-        }
-
-        // Documentos de oficina (Google Docs, Word, etc.)
-        if (mime.contains("document") || mime.contains("msword")
-                || mime.contains("wordprocessingml")) {
-            return TipoIcono.DOCUMENTO;
-        }
-
-        // Hojas de cálculo (Google Sheets, Excel, etc.)
-        if (mime.contains("spreadsheet") || mime.contains("excel")
-                || mime.contains("spreadsheetml")) {
-            return TipoIcono.HOJA_CALCULO;
-        }
-
-        // Presentaciones (Google Slides, PowerPoint, etc.)
-        if (mime.contains("presentation") || mime.contains("powerpoint")
-                || mime.contains("presentationml")) {
-            return TipoIcono.PRESENTACION;
-        }
-
-        // Archivos comprimidos
-        if (mime.contains("zip") || mime.contains("rar") 
-                || mime.contains("tar") || mime.contains("7z")) {
-            return TipoIcono.COMPRIMIDO;
-        }
-
-        return TipoIcono.ARCHIVO_GENERICO;
+        return REGLAS_MIME.stream()
+                .filter(regla -> regla.aplica().test(mime))
+                .map(ReglaIcono::tipo)
+                .findFirst()
+                .orElse(TipoIcono.ARCHIVO_GENERICO);
     }
 }
