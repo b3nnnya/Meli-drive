@@ -1,5 +1,6 @@
 package com.melidrive.modelo;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -7,8 +8,10 @@ import java.util.Objects;
  * asociar a los archivos para luego poder buscarlos o filtrarlos.
  * Este fue el reemplazo sugerido para el OCR automatizado.
  */
-public class Etiqueta {
-    
+public class Etiqueta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String nombre; // e.g., "Anatomía", "Parcial 1"
     private String colorHex; // Solo para propósitos visuales (JavaFX)

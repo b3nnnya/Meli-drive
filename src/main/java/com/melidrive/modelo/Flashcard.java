@@ -1,13 +1,16 @@
 package com.melidrive.modelo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Representa una tarjeta de estudio para el sistema de Spaced Repetition (Repaso Espaciado).
  * Relaciona una pregunta y una respuesta con un Documento (DriveFile).
  */
-public class Flashcard {
-    
+public class Flashcard implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private DriveFile archivoAsociado; // Composición: El documento del que sale este repaso
     private String pregunta;

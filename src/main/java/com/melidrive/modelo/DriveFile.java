@@ -5,14 +5,15 @@ import java.util.List;
 
 /**
  * Clase que representa un archivo de Google Drive.
- * Aquí aplicamos el concepto de "Abstracción" (representando un concepto real en código)
- * y "Encapsulamiento" (protegiendo los datos haciéndolos privados).
+ * Hereda de {@link ElementoDrive} la identidad común (id y nombre) y aporta
+ * los atributos propios del archivo. Aquí aplicamos "Abstracción" y
+ * "Encapsulamiento" (datos protegidos, expuestos mediante getters/setters).
  */
-public class DriveFile {
-    
-    // Atributos privados: Nadie fuera de esta clase puede accederlos ni modificarlos directamente.
-    private String id;
-    private String nombre;
+public class DriveFile extends ElementoDrive {
+
+    private static final long serialVersionUID = 2L;
+
+    // id y nombre ahora viven en la superclase ElementoDrive (herencia).
     private String tipoMime; // Ej: application/pdf, image/jpeg
     private long sizeEnBytes;
     
@@ -31,8 +32,7 @@ public class DriveFile {
      * Ej: DriveFile miArchivo = new DriveFile("123", "foto.png", "image/png", 2048);
      */
     public DriveFile(String id, String nombre, String tipoMime, long sizeEnBytes) {
-        this.id = id;
-        this.nombre = nombre;
+        super(id, nombre); // delega la identidad (id/nombre) a la superclase
         this.tipoMime = tipoMime;
         this.sizeEnBytes = sizeEnBytes;
         this.contenidoExtraido = ""; // Inicialmente vacío
@@ -54,21 +54,7 @@ public class DriveFile {
      * ==========================================
      */
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    // getId/setId/getNombre/setNombre se heredan de ElementoDrive (encapsulamiento común).
 
     public String getTipoMime() {
         return tipoMime;
@@ -133,6 +119,18 @@ public class DriveFile {
             }
         }
         return null;
+    }
+
+    /** Un archivo nunca es una carpeta (polimorfismo desde ElementoDrive). */
+    @Override
+    public boolean esCarpeta() {
+        return false;
+    }
+
+    /** El tamaño total de un archivo es su propio tamaño en bytes. */
+    @Override
+    public long getTamanioTotal() {
+        return sizeEnBytes;
     }
 
     /**

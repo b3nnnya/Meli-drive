@@ -6,18 +6,19 @@ import java.util.List;
 /**
  * Clase que representa una Carpeta dentro de Meli-Drive.
  * Puede contener tanto archivos (DriveFile) como subcarpetas (DriveFolder).
- * Implementado usando el patrón de diseño "Composite".
+ * Hereda de {@link ElementoDrive} la identidad común (id y nombre) y aplica
+ * el patrón de diseño "Composite".
  */
-public class DriveFolder {
-    
-    private String id;
-    private String nombre;
+public class DriveFolder extends ElementoDrive {
+
+    private static final long serialVersionUID = 2L;
+
+    // id y nombre ahora viven en la superclase ElementoDrive (herencia).
     private List<DriveFile> archivos;
     private List<DriveFolder> subcarpetas;
 
     public DriveFolder(String id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
+        super(id, nombre); // delega la identidad (id/nombre) a la superclase
         // Inicializamos las listas para evitar NullPointerException
         this.archivos = new ArrayList<>();
         this.subcarpetas = new ArrayList<>();
@@ -51,21 +52,7 @@ public class DriveFolder {
      * ==========================================
      */
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    // getId/setId/getNombre/setNombre se heredan de ElementoDrive (encapsulamiento común).
 
     public List<DriveFile> getArchivos() {
         return archivos;
@@ -100,6 +87,28 @@ public class DriveFolder {
             }
         }
         return null;
+    }
+
+    /** Una carpeta siempre es carpeta (polimorfismo desde ElementoDrive). */
+    @Override
+    public boolean esCarpeta() {
+        return true;
+    }
+
+    /**
+     * Tamaño total de la carpeta: la suma recursiva del tamaño de los archivos
+     * que contiene y de los de todas sus subcarpetas.
+     */
+    @Override
+    public long getTamanioTotal() {
+        long total = 0;
+        for (DriveFile archivo : archivos) {
+            total += archivo.getTamanioTotal();
+        }
+        for (DriveFolder subcarpeta : subcarpetas) {
+            total += subcarpeta.getTamanioTotal();
+        }
+        return total;
     }
 
     /**
