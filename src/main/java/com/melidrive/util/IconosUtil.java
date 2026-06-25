@@ -1,5 +1,10 @@
 package com.melidrive.util;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.InputStream;
+
 /**
  * Clase utilitaria para asignar íconos visuales según el tipo de contenido.
  * Mapea tipos MIME de DriveFile y carpetas (DriveFolder) a rutas de íconos.
@@ -35,6 +40,29 @@ public final class IconosUtil {
 
     // Constructor privado para evitar instanciación (clase utilitaria)
     private IconosUtil() {
+    }
+
+    /**
+     * Crea un ImageView con un ícono cargado desde resources, a un tamaño dado.
+     * Si el recurso no existe, devuelve un ImageView vacío (sin romper la vista).
+     *
+     * @param ruta ruta del recurso (p. ej. "icons/ui/nav-unidad.png")
+     * @param size ancho/alto en píxeles
+     */
+    public static ImageView crearIcono(String ruta, double size) {
+        ImageView vista = new ImageView();
+        vista.setFitWidth(size);
+        vista.setFitHeight(size);
+        vista.setPreserveRatio(true);
+        vista.setSmooth(true);
+        vista.setCache(true);
+        InputStream is = IconosUtil.class.getClassLoader().getResourceAsStream(ruta);
+        if (is != null) {
+            // Se carga la imagen a mayor resolución (HiDPI) con suavizado para que
+            // el ícono se vea nítido al reducirse a su tamaño final de visualización.
+            vista.setImage(new Image(is, size * 3, size * 3, true, true));
+        }
+        return vista;
     }
 
     /**
