@@ -2,6 +2,7 @@ package com.melidrive.vista;
 
 import com.melidrive.controlador.MainController;
 import com.melidrive.modelo.DriveFile;
+import com.melidrive.modelo.Etiqueta;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -71,7 +72,36 @@ public class BusquedaEtiquetaView extends VBox {
         btnVolver.getStyleClass().add("modern-button-secondary");
         btnVolver.setOnAction(e -> mainController.mostrarExplorador());
 
-        getChildren().addAll(titulo, descripcion, barBusqueda, labelResultados, scroll, btnVolver);
+        // === ETIQUETAS EXISTENTES (clickeables) ===
+        Label tituloExistentes = new Label("Etiquetas existentes:");
+        tituloExistentes.getStyleClass().add("text-h3");
+
+        FlowPane panelEtiquetasExistentes = new FlowPane();
+        panelEtiquetasExistentes.setHgap(8);
+        panelEtiquetasExistentes.setVgap(8);
+
+        List<Etiqueta> existentes = mainController.getGestorArchivos().obtenerTodasLasEtiquetas();
+        if (existentes.isEmpty()) {
+            Label vacio = new Label("(Aún no hay etiquetas. Agrégalas a tus archivos desde el visor de documentos.)");
+            vacio.getStyleClass().add("text-caption");
+            panelEtiquetasExistentes.getChildren().add(vacio);
+        } else {
+            for (Etiqueta et : existentes) {
+                Button chip = new Button(et.getNombre());
+                chip.getStyleClass().add("tag-chip-lg");
+                chip.setStyle("-fx-background-color: " + et.getColorHex() + "22; "
+                        + "-fx-text-fill: " + et.getColorHex() + ";");
+                chip.setOnAction(e -> {
+                    campoBusqueda.setText(et.getNombre());
+                    ejecutarBusqueda(et.getNombre());
+                });
+                panelEtiquetasExistentes.getChildren().add(chip);
+            }
+        }
+
+        getChildren().addAll(titulo, descripcion, barBusqueda,
+                tituloExistentes, panelEtiquetasExistentes,
+                labelResultados, scroll, btnVolver);
     }
 
     /**
@@ -123,9 +153,9 @@ public class BusquedaEtiquetaView extends VBox {
         HBox etiquetasBox = new HBox(5);
         archivo.getEtiquetas().forEach(et -> {
             Label chip = new Label(et.getNombre());
+            chip.getStyleClass().add("tag-chip");
             chip.setStyle("-fx-background-color: " + et.getColorHex() + "22; "
-                    + "-fx-text-fill: " + et.getColorHex() + "; "
-                    + "-fx-padding: 2 8; -fx-background-radius: 10; -fx-font-size: 10px;");
+                    + "-fx-text-fill: " + et.getColorHex() + ";");
             etiquetasBox.getChildren().add(chip);
         });
 
