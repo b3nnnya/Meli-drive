@@ -1,6 +1,14 @@
 .root {
     -fx-font-family: "Segoe UI", "Inter", "Roboto", sans-serif;
     -fx-background-color: #f8fafc;
+
+    /* Tokens de color (looked-up colors). dark.css los redefine en su .root
+       para que botones y bordes se adapten automáticamente al tema. */
+    -color-success: #00b894;
+    -color-success-hover: #00a383;
+    -color-danger: #e74c3c;
+    -color-danger-hover: #c0392b;
+    -color-divider: #e2e8f0;
 }
 
 /* Typography Utilities */
@@ -185,4 +193,146 @@
 .modern-list-cell:empty {
     -fx-background-color: transparent;
     -fx-border-width: 0;
+}
+
+/* SplitPane — divisor sutil y arrastrable */
+.split-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.split-pane > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 2 0 2;
+    -fx-cursor: h-resize;
+}
+.split-pane > .split-pane-divider:hover {
+    -fx-background-color: rgba(99, 102, 241, 0.22);
+}
+.split-pane > .split-pane-divider > .horizontal-grabber,
+.split-pane > .split-pane-divider > .vertical-grabber {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Línea divisoria sutil del panel de etiquetas (réplica de la línea del sidebar) */
+.panel-etiquetas {
+    -fx-border-color: -color-divider;
+    -fx-border-width: 0 0 0 1;
+}
+
+/* === Botones de acción con color (antes estilos inline) === */
+.btn-success {
+    -fx-background-color: -color-success;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+.btn-success:hover {
+    -fx-background-color: -color-success-hover;
+}
+
+/* Botón secundario cuyo texto resalta en rojo (p. ej. "Eliminar este repaso") */
+.btn-danger-text {
+    -fx-text-fill: -color-danger;
+}
+.btn-danger-text:hover {
+    -fx-text-fill: -color-danger-hover;
+}
+
+/* Botón "x" para quitar una etiqueta */
+.chip-close {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-danger;
+    -fx-cursor: hand;
+    -fx-font-size: 10px;
+    -fx-padding: 0 4 0 4;
+}
+.chip-close:hover {
+    -fx-text-fill: -color-danger-hover;
+}
+
+/* === Chip de etiqueta: estructura común (el color sigue siendo el de la etiqueta) === */
+.tag-chip {
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 12;
+    -fx-font-size: 11px;
+}
+.tag-chip-lg {
+    -fx-padding: 5 12 5 12;
+    -fx-background-radius: 14;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+/* === Estado vacío del explorador === */
+.empty-state {
+    -fx-alignment: center;
+    -fx-spacing: 8;
+    -fx-padding: 50 20 50 20;
+}
+.empty-state-icon {
+    -fx-font-size: 56px;
+}
+.empty-state-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+}
+.empty-state-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #94a3b8;
+}
+
+/* === Toast / Notificación flotante === */
+.toast {
+    -fx-background-color: #0f172a;
+    -fx-background-radius: 10;
+    -fx-padding: 12 18 12 18;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 16, 0, 0, 6);
+}
+.toast-text {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+.toast-success { -fx-border-color: #10b981; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
+.toast-danger  { -fx-border-color: #ef4444; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
+.toast-info    { -fx-border-color: #6366f1; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
+
+/* === Breadcrumb === */
+.crumb-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748b;
+    -fx-font-size: 13px;
+    -fx-padding: 4 6 4 6;
+    -fx-cursor: hand;
+    -fx-background-radius: 6;
+}
+.crumb-link:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #4338ca;
+}
+.crumb-current {
+    -fx-text-fill: #4f46e5;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 6 4 6;
+}
+.crumb-sep {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 13px;
+}
+
+/* === Barra de progreso del Modo Estudio === */
+.progress-estudio .track {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 8;
+}
+.progress-estudio .bar {
+    -fx-background-color: #4f46e5;
+    -fx-background-radius: 8;
+    -fx-padding: 4;
 }

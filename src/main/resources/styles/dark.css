@@ -4,6 +4,13 @@
 
 .root {
     -fx-background-color: #0f172a;
+
+    /* Redefinición de tokens para el tema oscuro (ver main.css) */
+    -color-success: #10b981;
+    -color-success-hover: #34d399;
+    -color-danger: #f87171;
+    -color-danger-hover: #ef4444;
+    -color-divider: #334155;
 }
 
 /* Typography Utilities */
@@ -166,5 +173,70 @@
 }
 .separator .line {
     -fx-border-color: #334155;
+}
+
+/* SplitPane — divisor sutil y arrastrable (tema oscuro) */
+.split-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.split-pane > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 2 0 2;
+    -fx-cursor: h-resize;
+}
+.split-pane > .split-pane-divider:hover {
+    -fx-background-color: rgba(129, 140, 248, 0.32);
+}
+.split-pane > .split-pane-divider > .horizontal-grabber,
+.split-pane > .split-pane-divider > .vertical-grabber {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Línea divisoria sutil del panel de etiquetas (réplica de la línea del sidebar) */
+.panel-etiquetas {
+    -fx-border-color: -color-divider;
+    -fx-border-width: 0 0 0 1;
+}
+
+/* === Estado vacío (tema oscuro) === */
+.empty-state-title {
+    -fx-text-fill: #e2e8f0;
+}
+.empty-state-text {
+    -fx-text-fill: #64748b;
+}
+
+/* === Toast (tema oscuro): superficie más clara para contraste sobre el fondo === */
+.toast {
+    -fx-background-color: #1e293b;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 16, 0, 0, 6);
+}
+.toast-text {
+    -fx-text-fill: #f1f5f9;
+}
+
+/* === Breadcrumb (tema oscuro) === */
+.crumb-link {
+    -fx-text-fill: #94a3b8;
+}
+.crumb-link:hover {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #a5b4fc;
+}
+.crumb-current {
+    -fx-text-fill: #818cf8;
+}
+.crumb-sep {
+    -fx-text-fill: #475569;
+}
+
+/* === Barra de progreso del Modo Estudio (tema oscuro) === */
+.progress-estudio .track {
+    -fx-background-color: #334155;
+}
+.progress-estudio .bar {
+    -fx-background-color: #818cf8;
 }
 
