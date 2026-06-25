@@ -18,7 +18,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        mainController = new MainController();
+        // Inversión de Dependencias: se inyecta la implementación de persistencia.
+        mainController = new MainController(new com.melidrive.util.RepositorioDatos());
         MainView mainView = new MainView(mainController);
         mainController.setMainView(mainView);
 

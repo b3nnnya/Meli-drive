@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption;
  * a partir de un directorio raíz ("Root").
  * Aquí aplicamos el concepto de "Fachada" para simplificar la creación y búsqueda.
  */
-public class GestorArchivos {
+public class GestorArchivos implements IGestorArchivos {
 
     private DriveFolder carpetaRaiz;
 

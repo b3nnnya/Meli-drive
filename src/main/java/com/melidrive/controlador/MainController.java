@@ -4,7 +4,8 @@ import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.DriveFolder;
 import com.melidrive.modelo.EstadoAplicacion;
 import com.melidrive.modelo.GestorArchivos;
-import com.melidrive.util.RepositorioDatos;
+import com.melidrive.modelo.IGestorArchivos;
+import com.melidrive.util.IRepositorio;
 import com.melidrive.util.ThemeManager;
 import com.melidrive.vista.MainView;
 
@@ -15,7 +16,8 @@ import com.melidrive.vista.MainView;
  */
 public class MainController {
 
-    private GestorArchivos gestorArchivos;
+    private IGestorArchivos gestorArchivos;
+    private final IRepositorio repositorio;
     private MainView mainView;
     private ThemeManager themeManager;
     private boolean modoOscuroGuardado;
@@ -25,9 +27,10 @@ public class MainController {
     private VisorDocumentoController visorDocumentoController;
     private SidebarController sidebarController;
 
-    public MainController() {
+    public MainController(IRepositorio repositorio) {
+        this.repositorio = repositorio;
         // Intentar restaurar el estado guardado en disco (árbol de carpetas + flashcards).
-        EstadoAplicacion estadoGuardado = RepositorioDatos.cargar();
+        EstadoAplicacion estadoGuardado = repositorio.cargar();
         this.modoOscuroGuardado = (estadoGuardado != null) && estadoGuardado.isModoOscuro();
 
         if (estadoGuardado != null && estadoGuardado.getCarpetaRaiz() != null) {
@@ -144,7 +147,7 @@ public class MainController {
                 "¿Cuál es el hueso más largo del cuerpo?", "El fémur");
     }
 
-    public GestorArchivos getGestorArchivos() {
+    public IGestorArchivos getGestorArchivos() {
         return gestorArchivos;
     }
 
@@ -185,6 +188,6 @@ public class MainController {
                 flashcardController.getTodasLasFlashcards(),
                 modoOscuro
         );
-        RepositorioDatos.guardar(estado);
+        repositorio.guardar(estado);
     }
 }

@@ -2,7 +2,7 @@ package com.melidrive.controlador;
 
 import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.DriveFolder;
-import com.melidrive.modelo.GestorArchivos;
+import com.melidrive.modelo.IGestorArchivos;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ExploradorController {
 
-    private GestorArchivos gestorArchivos;
+    private IGestorArchivos gestorArchivos;
     private DriveFolder carpetaActual;
     private Deque<DriveFolder> historial;
 

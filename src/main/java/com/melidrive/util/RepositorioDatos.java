@@ -14,14 +14,15 @@ import java.nio.file.Paths;
  * de la aplicación (EstadoAplicacion) en disco usando serialización Java.
  * El archivo se almacena en data/melidrive.dat.
  */
-public class RepositorioDatos {
+public class RepositorioDatos implements IRepositorio {
 
     private static final Path ARCHIVO_DATOS = Paths.get("data", "melidrive.dat");
 
     /**
      * Serializa y guarda el estado de la aplicación en disco.
      */
-    public static void guardar(EstadoAplicacion estado) {
+    @Override
+    public void guardar(EstadoAplicacion estado) {
         try {
             if (ARCHIVO_DATOS.getParent() != null) {
                 Files.createDirectories(ARCHIVO_DATOS.getParent());
@@ -39,7 +40,8 @@ public class RepositorioDatos {
      * Restaura el estado de la aplicación desde disco.
      * @return el estado guardado, o null si no existe o no se pudo leer.
      */
-    public static EstadoAplicacion cargar() {
+    @Override
+    public EstadoAplicacion cargar() {
         if (!Files.exists(ARCHIVO_DATOS)) {
             System.out.println("No hay estado previo. Se iniciará con datos de ejemplo.");
             return null;
