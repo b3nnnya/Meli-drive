@@ -6,8 +6,14 @@ import com.melidrive.controlador.MainController;
 import com.melidrive.controlador.VisorDocumentoController;
 import com.melidrive.modelo.DriveFile;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
 import java.util.List;
@@ -23,12 +29,20 @@ public class MainView extends BorderPane {
     private Button btnExplorador;
     private Button btnFlashcards;
     private Button btnBuscarEtiqueta;
+    private Button btnModoOscuro;
+    private TextField buscador;
+    private FlashcardView flashcardViewActiva;
 
     public MainView(MainController mainController) {
         this.mainController = mainController;
 
+        // NOTA: main.css se aplica a nivel de Scene desde ThemeManager.aplicarEstiloPrincipal().
+        // No debe cargarse aquí sobre el nodo raíz: en JavaFX las hojas de estilo de un Parent
+        // tienen prioridad sobre las de la Scene, lo que impediría que dark.css (aplicado en la
+        // Scene) sobrescriba a main.css y dejaría el modo oscuro sin efecto.
+
         // === BARRA SUPERIOR ===
-        TextField buscador = new TextField();
+        buscador = new TextField();
         buscador.setPromptText("Buscar en tus archivos...");
         buscador.setPrefWidth(400);
 
@@ -42,15 +56,11 @@ public class MainView extends BorderPane {
             }
         });
 
-        Button btnModoOscuro = new Button("Modo Oscuro");
+        btnModoOscuro = new Button("🌙  Modo Oscuro");
         btnModoOscuro.getStyleClass().add("modern-button-secondary");
         btnModoOscuro.setOnAction(e -> {
             mainController.toggleModoOscuro();
-            if (mainController.getThemeManager() != null && mainController.getThemeManager().isModoOscuro()) {
-                btnModoOscuro.setText("Modo Claro");
-            } else {
-                btnModoOscuro.setText("Modo Oscuro");
-            }
+            actualizarBotonTema();
         });
 
         Region spacer = new Region();
@@ -75,9 +85,9 @@ public class MainView extends BorderPane {
 
         Separator separador = new Separator();
 
-        btnExplorador = new Button("Mi Unidad");
-        btnBuscarEtiqueta = new Button("Buscar por Etiqueta");
-        btnFlashcards = new Button("Modo Estudio");
+        btnExplorador = new Button("📁  Mi Unidad");
+        btnBuscarEtiqueta = new Button("🏷  Buscar por Etiqueta");
+        btnFlashcards = new Button("📚  Modo Estudio");
 
         actualizarEstiloBotonesSidebar(btnExplorador);
 
@@ -97,12 +107,92 @@ public class MainView extends BorderPane {
         });
 
         sidebar.getChildren().addAll(tituloSidebar, separador, btnExplorador, btnBuscarEtiqueta, btnFlashcards);
-        setLeft(sidebar);
 
         // === ÁREA CENTRAL ===
         areaCentral = new StackPane();
         areaCentral.getStyleClass().add("content-area");
-        setCenter(areaCentral);
+
+        // === DIVISOR ARRASTRABLE ENTRE SIDEBAR Y ÁREA CENTRAL ===
+        // SplitPane con divisor sutil (ver estilo .split-pane en los CSS): casi invisible
+        // en reposo y con un leve resalte al pasar el mouse, para no recargar la interfaz.
+        SplitPane splitPrincipal = new SplitPane(sidebar, areaCentral);
+        splitPrincipal.setOrientation(Orientation.HORIZONTAL);
+        // El sidebar arranca ocupando ~23% del ancho (≈220px en 960px).
+        splitPrincipal.setDividerPositions(0.23);
+        // Límites para que el sidebar no se colapse ni crezca demasiado al arrastrar.
+        sidebar.setMinWidth(170);
+        sidebar.setMaxWidth(380);
+        // Al redimensionar la ventana, el espacio extra va al área central, no al sidebar.
+        SplitPane.setResizableWithParent(sidebar, false);
+
+        setCenter(splitPrincipal);
+
+        // Configurar los atajos de teclado en cuanto la escena esté disponible.
+        sceneProperty().addListener((obs, anterior, nueva) -> {
+            if (nueva != null) {
+                configurarAtajos(nueva);
+            }
+        });
+    }
+
+    /**
+     * Registra los atajos de teclado globales:
+     * Ctrl+F enfoca el buscador, Esc vuelve al explorador, y en el Modo Estudio
+     * Espacio voltea la tarjeta mientras ← / → la califican (difícil / fácil).
+     * No interfiere cuando el foco está en un campo de texto.
+     */
+    private void configurarAtajos(Scene scene) {
+        final KeyCombination ctrlF = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, ev -> {
+            if (ctrlF.match(ev)) {
+                buscador.requestFocus();
+                buscador.selectAll();
+                ev.consume();
+                return;
+            }
+            if (ev.getCode() == KeyCode.ESCAPE) {
+                mainController.mostrarExplorador();
+                ev.consume();
+                return;
+            }
+
+            // Si se está escribiendo en un campo de texto, no robar las teclas.
+            if (scene.getFocusOwner() instanceof TextInputControl) {
+                return;
+            }
+
+            // Atajos exclusivos del Modo Estudio.
+            if (flashcardViewActiva != null) {
+                switch (ev.getCode()) {
+                    case SPACE:
+                        flashcardViewActiva.voltearDesdeTeclado();
+                        ev.consume();
+                        break;
+                    case LEFT:
+                        flashcardViewActiva.calificarDesdeTeclado(1);
+                        ev.consume();
+                        break;
+                    case RIGHT:
+                        flashcardViewActiva.calificarDesdeTeclado(2);
+                        ev.consume();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * Actualiza el texto y el icono del botón de tema según el estado actual
+     * (sol = pasar a claro cuando está oscuro; luna = pasar a oscuro cuando está claro).
+     * Es público para que el controlador lo invoque tras restaurar el tema guardado.
+     */
+    public void actualizarBotonTema() {
+        boolean oscuro = mainController.getThemeManager() != null
+                && mainController.getThemeManager().isModoOscuro();
+        btnModoOscuro.setText(oscuro ? "☀  Modo Claro" : "🌙  Modo Oscuro");
     }
 
     private void actualizarEstiloBotonesSidebar(Button activo) {
@@ -121,6 +211,7 @@ public class MainView extends BorderPane {
      * Reemplaza el contenido central con la vista del Explorador.
      */
     public void mostrarExplorador(ExploradorController controller) {
+        flashcardViewActiva = null;
         ExploradorView vista = new ExploradorView(controller, mainController);
         areaCentral.getChildren().setAll(vista);
     }
@@ -130,6 +221,7 @@ public class MainView extends BorderPane {
      */
     public void mostrarFlashcards(FlashcardController controller) {
         FlashcardView vista = new FlashcardView(controller);
+        flashcardViewActiva = vista;
         areaCentral.getChildren().setAll(vista);
     }
 
@@ -137,6 +229,7 @@ public class MainView extends BorderPane {
      * Reemplaza el contenido central con el Visor de Documentos.
      */
     public void mostrarVisorDocumento(VisorDocumentoController controller) {
+        flashcardViewActiva = null;
         VisorDocumentoView vista = new VisorDocumentoView(controller, mainController);
         areaCentral.getChildren().setAll(vista);
     }
@@ -145,6 +238,7 @@ public class MainView extends BorderPane {
      * Reemplaza el contenido central con la vista de Búsqueda por Etiqueta.
      */
     public void mostrarBusquedaPorEtiqueta(MainController controller) {
+        flashcardViewActiva = null;
         BusquedaEtiquetaView vista = new BusquedaEtiquetaView(controller);
         areaCentral.getChildren().setAll(vista);
     }
@@ -153,6 +247,7 @@ public class MainView extends BorderPane {
      * Muestra resultados de búsqueda en el área central.
      */
     private void mostrarResultadosBusqueda(List<DriveFile> resultados, String termino) {
+        flashcardViewActiva = null;
         VBox contenedor = new VBox(10);
         contenedor.setPadding(new Insets(15));
 
