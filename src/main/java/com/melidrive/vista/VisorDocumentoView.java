@@ -4,7 +4,9 @@ import com.melidrive.controlador.MainController;
 import com.melidrive.controlador.VisorDocumentoController;
 import com.melidrive.modelo.DriveFile;
 import com.melidrive.modelo.Etiqueta;
+import com.melidrive.util.Notificador;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -38,6 +40,8 @@ public class VisorDocumentoView extends HBox {
     private PDDocument pdfDoc;
     private PDFRenderer pdfRenderer;
     private Pane imageContainer;
+    private double zoomFactor = 1.0;
+    private Label lblZoom;
 
     public VisorDocumentoView(VisorDocumentoController controller, MainController mainController) {
         this.controller = controller;
@@ -85,7 +89,25 @@ public class VisorDocumentoView extends HBox {
         btnRecortar.getStyleClass().add("modern-button-primary");
         btnRecortar.setDisable(true); // Se habilita cuando hay un recorte seleccionado
         
-        toolbarVisor.getChildren().addAll(labelContenido, btnRecortar);
+        Region spacerToolbar = new Region();
+        HBox.setHgrow(spacerToolbar, Priority.ALWAYS);
+
+        Button btnZoomMenos = new Button("−");
+        btnZoomMenos.getStyleClass().add("modern-button-secondary");
+        lblZoom = new Label("100%");
+        lblZoom.getStyleClass().add("text-body");
+        lblZoom.setMinWidth(42);
+        lblZoom.setAlignment(Pos.CENTER);
+        Button btnZoomMas = new Button("+");
+        btnZoomMas.getStyleClass().add("modern-button-secondary");
+        Button btnZoomReset = new Button("1:1");
+        btnZoomReset.getStyleClass().add("modern-button-secondary");
+
+        btnZoomMenos.setOnAction(e -> cambiarZoom(-0.25));
+        btnZoomMas.setOnAction(e -> cambiarZoom(0.25));
+        btnZoomReset.setOnAction(e -> { zoomFactor = 1.0; actualizarImagen(); actualizarLabelZoom(); });
+
+        toolbarVisor.getChildren().addAll(labelContenido, btnRecortar, spacerToolbar, btnZoomMenos, lblZoom, btnZoomMas, btnZoomReset);
 
         imageContainer = new Pane();
         imageView = new ImageView();
@@ -99,6 +121,12 @@ public class VisorDocumentoView extends HBox {
 
         ScrollPane scrollVisor = new ScrollPane(imageContainer);
         scrollVisor.getStyleClass().add("scroll-pane");
+        // Barras de desplazamiento (horizontal y vertical) que aparecen cuando el PDF
+        // es más grande que el área visible, para poder acomodarlo arrastrándolas.
+        scrollVisor.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollVisor.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        // minWidth 0 evita que el gran tamaño del PDF estire el panel y aplaste el resto.
+        scrollVisor.setMinWidth(0);
         VBox.setVgrow(scrollVisor, Priority.ALWAYS);
 
         // Eventos de ratón para el recorte
@@ -138,10 +166,14 @@ public class VisorDocumentoView extends HBox {
 
         btnRecortar.setOnAction(e -> {
             if (currentImage != null && seleccionRect.isVisible()) {
-                int x = (int) seleccionRect.getX();
-                int y = (int) seleccionRect.getY();
-                int w = (int) seleccionRect.getWidth();
-                int h = (int) seleccionRect.getHeight();
+                int x = (int) (seleccionRect.getX() / zoomFactor);
+                int y = (int) (seleccionRect.getY() / zoomFactor);
+                int w = (int) (seleccionRect.getWidth() / zoomFactor);
+                int h = (int) (seleccionRect.getHeight() / zoomFactor);
+                x = Math.max(0, Math.min(x, (int) currentImage.getWidth() - 1));
+                y = Math.max(0, Math.min(y, (int) currentImage.getHeight() - 1));
+                w = Math.min(w, (int) currentImage.getWidth() - x);
+                h = Math.min(h, (int) currentImage.getHeight() - y);
 
                 PixelReader reader = currentImage.getPixelReader();
                 WritableImage cropped = new WritableImage(reader, x, y, w, h);
@@ -222,6 +254,7 @@ public class VisorDocumentoView extends HBox {
         panelEtiquetas.setPadding(new Insets(15));
         panelEtiquetas.setPrefWidth(220);
         panelEtiquetas.getStyleClass().add("sidebar");
+        panelEtiquetas.getStyleClass().add("panel-etiquetas");
 
         Label tituloEtiquetas = new Label("Etiquetas");
         tituloEtiquetas.getStyleClass().add("text-h2");
@@ -233,15 +266,15 @@ public class VisorDocumentoView extends HBox {
                 fila.setAlignment(Pos.CENTER_LEFT);
 
                 Label chip = new Label(etiqueta.getNombre());
+                chip.getStyleClass().add("tag-chip");
                 chip.setStyle("-fx-background-color: " + etiqueta.getColorHex() + "22; "
-                        + "-fx-text-fill: " + etiqueta.getColorHex() + "; "
-                        + "-fx-padding: 4 10; -fx-background-radius: 12; -fx-font-size: 11px;");
+                        + "-fx-text-fill: " + etiqueta.getColorHex() + ";");
 
                 Button btnEliminar = new Button("x");
-                btnEliminar.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; "
-                        + "-fx-cursor: hand; -fx-font-size: 10px;");
+                btnEliminar.getStyleClass().add("chip-close");
                 btnEliminar.setOnAction(e -> {
                     controller.eliminarEtiqueta(etiqueta);
+                    Notificador.mostrar(this, "Etiqueta \"" + etiqueta.getNombre() + "\" eliminada", Notificador.Tipo.DANGER);
                     mainController.mostrarVisorDocumento(archivo);
                 });
 
@@ -262,6 +295,12 @@ public class VisorDocumentoView extends HBox {
         campoEtiqueta.setPromptText("Nueva etiqueta...");
         campoEtiqueta.getStyleClass().add("modern-text-field");
 
+        // Selector de color: el usuario elige el color de la etiqueta al crearla.
+        Label lblColor = new Label("Color de la etiqueta:");
+        lblColor.getStyleClass().add("text-caption");
+        ColorPicker selectorColor = new ColorPicker(Color.web("#6c5ce7"));
+        selectorColor.setMaxWidth(Double.MAX_VALUE);
+
         Button btnAgregar = new Button("+ Agregar");
         btnAgregar.getStyleClass().add("modern-button-primary");
         btnAgregar.setOnAction(e -> {
@@ -270,16 +309,33 @@ public class VisorDocumentoView extends HBox {
                 Etiqueta nueva = new Etiqueta(
                         "tag-" + System.currentTimeMillis(),
                         nombre.trim(),
-                        "#6c5ce7"
+                        aHex(selectorColor.getValue())
                 );
                 controller.agregarEtiqueta(nueva);
+                Notificador.mostrar(this, "Etiqueta \"" + nombre.trim() + "\" agregada", Notificador.Tipo.SUCCESS);
                 mainController.mostrarVisorDocumento(archivo);
             }
         });
 
-        panelEtiquetas.getChildren().addAll(tituloEtiquetas, listaEtiquetas, sep, campoEtiqueta, btnAgregar);
+        panelEtiquetas.getChildren().addAll(tituloEtiquetas, listaEtiquetas, sep, campoEtiqueta, lblColor, selectorColor, btnAgregar);
 
-        getChildren().addAll(panelContenido, panelEtiquetas);
+        // === DIVISOR ARRASTRABLE ENTRE EL DOCUMENTO Y LAS ETIQUETAS ===
+        // SplitPane coloca una barra que el usuario puede deslizar desde el lado
+        // para dar más o menos espacio al PDF según lo necesite.
+        SplitPane splitPane = new SplitPane(panelContenido, panelEtiquetas);
+        splitPane.setOrientation(Orientation.HORIZONTAL);
+        // Posición inicial del divisor: ~78% para el documento, ~22% para etiquetas.
+        splitPane.setDividerPositions(0.78);
+        // Tamaños mínimos para que ningún panel se colapse al arrastrar.
+        panelContenido.setMinWidth(320);
+        panelEtiquetas.setMinWidth(170);
+        // Al redimensionar la ventana, el espacio extra va al documento, no a las etiquetas.
+        SplitPane.setResizableWithParent(panelEtiquetas, false);
+
+        HBox.setHgrow(splitPane, Priority.ALWAYS);
+        splitPane.setMaxWidth(Double.MAX_VALUE);
+
+        getChildren().add(splitPane);
     }
 
     private void renderizarPagina(int pagina, Label lblPagina) {
@@ -299,7 +355,24 @@ public class VisorDocumentoView extends HBox {
     private void actualizarImagen() {
         if (currentImage != null) {
             imageView.setImage(currentImage);
-            imageContainer.setPrefSize(currentImage.getWidth(), currentImage.getHeight());
+            double w = currentImage.getWidth() * zoomFactor;
+            double h = currentImage.getHeight() * zoomFactor;
+            imageView.setFitWidth(w);
+            imageView.setFitHeight(h);
+            imageView.setPreserveRatio(false);
+            imageContainer.setPrefSize(w, h);
+        }
+    }
+
+    private void cambiarZoom(double delta) {
+        zoomFactor = Math.max(0.25, Math.min(3.0, zoomFactor + delta));
+        actualizarImagen();
+        actualizarLabelZoom();
+    }
+
+    private void actualizarLabelZoom() {
+        if (lblZoom != null) {
+            lblZoom.setText((int) (zoomFactor * 100) + "%");
         }
     }
 
@@ -308,6 +381,17 @@ public class VisorDocumentoView extends HBox {
         lblError.setStyle("-fx-text-fill: red; -fx-padding: 20;");
         imageContainer.getChildren().clear();
         imageContainer.getChildren().add(lblError);
+    }
+
+    /**
+     * Convierte un Color de JavaFX a su representación hexadecimal (#RRGGBB),
+     * que es el formato que almacena la Etiqueta y usa el CSS.
+     */
+    private String aHex(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) Math.round(color.getRed() * 255),
+                (int) Math.round(color.getGreen() * 255),
+                (int) Math.round(color.getBlue() * 255));
     }
 
     /**
