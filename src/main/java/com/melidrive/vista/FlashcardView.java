@@ -270,14 +270,7 @@ public class FlashcardView extends VBox {
         Flashcard actual = controller.getFlashcardActual();
         if (actual == null) return;
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Eliminar repaso");
-        confirm.setHeaderText("¿Eliminar este repaso de ejercicio?");
-        confirm.setContentText("Pregunta: " + actual.getPregunta());
-        confirm.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
-
-        java.util.Optional<ButtonType> respuesta = confirm.showAndWait();
-        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
+        if (DialogosConfirmacion.eliminarRepaso(actual.getPregunta())) {
             controller.eliminarFlashcardActual();
             Notificador.mostrar(this, "Repaso eliminado", Notificador.Tipo.DANGER);
             mostrarTarjetaActual();
