@@ -1,4 +1,4 @@
-# 📁 Meli-Drive — S.I.G.E.A.
+# S.I.G.E.A.
 
 **Sistema Inteligente de Gestión y Estudio Académico**
 
