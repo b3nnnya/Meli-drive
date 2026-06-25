@@ -59,8 +59,8 @@
 }
 
 .sidebar-button-active {
-    -fx-background-color: #e0e7ff;
-    -fx-text-fill: #4338ca;
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1d4ed8;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
     -fx-padding: 12 16 12 16;
@@ -92,7 +92,7 @@
 
 .search-field:focused {
     -fx-background-color: #ffffff;
-    -fx-border-color: #a5b4fc;
+    -fx-border-color: #93c5fd;
     -fx-border-width: 2;
     -fx-border-radius: 20;
 }
@@ -105,22 +105,22 @@
     -fx-padding: 10 12 10 12;
 }
 .modern-text-field:focused {
-    -fx-border-color: #6366f1;
+    -fx-border-color: #3b82f6;
 }
 
 /* Buttons */
 .modern-button-primary {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #2563eb;
     -fx-text-fill: white;
     -fx-background-radius: 12;
     -fx-padding: 10 20 10 20;
     -fx-cursor: hand;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
-    -fx-effect: dropshadow(three-pass-box, rgba(79, 70, 229, 0.3), 10, 0, 0, 4);
+    -fx-effect: dropshadow(three-pass-box, rgba(37, 99, 235, 0.3), 10, 0, 0, 4);
 }
 .modern-button-primary:hover {
-    -fx-background-color: #4338ca;
+    -fx-background-color: #1d4ed8;
 }
 
 .modern-button-secondary {
@@ -206,7 +206,7 @@
     -fx-cursor: h-resize;
 }
 .split-pane > .split-pane-divider:hover {
-    -fx-background-color: rgba(99, 102, 241, 0.22);
+    -fx-background-color: rgba(37, 99, 235, 0.22);
 }
 .split-pane > .split-pane-divider > .horizontal-grabber,
 .split-pane > .split-pane-divider > .vertical-grabber {
@@ -300,7 +300,7 @@
 }
 .toast-success { -fx-border-color: #10b981; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
 .toast-danger  { -fx-border-color: #ef4444; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
-.toast-info    { -fx-border-color: #6366f1; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
+.toast-info    { -fx-border-color: #3b82f6; -fx-border-width: 0 0 0 4; -fx-border-radius: 0; }
 
 /* === Breadcrumb === */
 .crumb-link {
@@ -313,10 +313,10 @@
 }
 .crumb-link:hover {
     -fx-background-color: #f1f5f9;
-    -fx-text-fill: #4338ca;
+    -fx-text-fill: #1d4ed8;
 }
 .crumb-current {
-    -fx-text-fill: #4f46e5;
+    -fx-text-fill: #2563eb;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-padding: 4 6 4 6;
@@ -332,7 +332,84 @@
     -fx-background-radius: 8;
 }
 .progress-estudio .bar {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #2563eb;
     -fx-background-radius: 8;
     -fx-padding: 4;
+}
+
+/* === Pantalla de bienvenida (launcher SIGEA) — paleta oscura fija + azul brillante === */
+.bienvenida-root {
+    -fx-background-color: #0d0d12;
+}
+.bienvenida-root .bienvenida-titulo {
+    -fx-font-size: 40px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #ffffff;
+}
+.bienvenida-root .bienvenida-version {
+    -fx-font-size: 13px;
+    -fx-text-fill: #8a8a99;
+}
+.bienvenida-card {
+    -fx-background-color: #16161d;
+    -fx-background-radius: 14;
+    -fx-border-color: #24242e;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 6 22 6 22;
+}
+.bienvenida-root .bienvenida-opcion-titulo {
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #ececf1;
+}
+.bienvenida-root .bienvenida-opcion-desc {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8a8a99;
+}
+.bienvenida-sep {
+    -fx-background-color: #24242e;
+}
+
+/* Botón principal "Inicio rápido" */
+.btn-inicio-rapido {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-padding: 13 24 13 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(37,99,235,0.45), 16, 0, 0, 4);
+}
+.btn-inicio-rapido:hover {
+    -fx-background-color: #3b82f6;
+}
+
+/* Botón azul secundario (Crear) */
+.btn-azul {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8;
+    -fx-padding: 9 18 9 18;
+    -fx-cursor: hand;
+}
+.btn-azul:hover {
+    -fx-background-color: #3b82f6;
+}
+
+/* Botón gris oscuro (Abrir) */
+.btn-gris-oscuro {
+    -fx-background-color: #2a2a34;
+    -fx-text-fill: #e6e6ec;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8;
+    -fx-padding: 9 18 9 18;
+    -fx-cursor: hand;
+}
+.btn-gris-oscuro:hover {
+    -fx-background-color: #34343f;
 }
